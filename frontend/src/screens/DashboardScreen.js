@@ -38,7 +38,7 @@ const DashboardScreen = () => {
     if (user && token) {
       loadMedicines();
     }
-  }, []);  // Removed user and token from dependency array to prevent re-renders causing vibration
+  }, [token, user]);  // Added token and user to dependency array to satisfy ESLint
 
   // Calculate adherence percentage (mocked for demo)
   const calculateAdherence = () => {

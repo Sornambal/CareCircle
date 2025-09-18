@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui/material';
-import { Dashboard, Chat, Logout } from '@mui/icons-material';
+
 
 const RegistrationScreen = React.lazy(() => import('./screens/RegistrationScreen'));
 const LoginScreen = React.lazy(() => import('./screens/LoginScreen'));
