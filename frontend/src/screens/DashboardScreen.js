@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import MedicineCard from '../components/MedicineCard';
 import SOSButton from '../components/SOSButton';
 import ReportCard from '../components/ReportCard';
@@ -21,7 +21,10 @@ const DashboardScreen = () => {
     doctorContact: '',
   });
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [user, setUser] = React.useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : {};
+  });
 
   useEffect(() => {
     const loadMedicines = async () => {
@@ -38,7 +41,7 @@ const DashboardScreen = () => {
     if (user && token) {
       loadMedicines();
     }
-  }, [token, user]);  // Added token and user to dependency array to satisfy ESLint
+  }, [token, user]);  // Use stable user state in dependency array
 
   // Calculate adherence percentage (mocked for demo)
   const calculateAdherence = () => {
