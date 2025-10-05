@@ -7,8 +7,13 @@ export const registerUser = (data) => {
   return axios.post(`${API_BASE_URL}/auth/register`, data);
 };
 
-// User login
+// User login (legacy)
 export const loginUser = (data) => {
+  return axios.post(`${API_BASE_URL}/auth/login`, data);
+};
+
+// Login
+export const login = (data) => {
   return axios.post(`${API_BASE_URL}/auth/login`, data);
 };
 
@@ -36,10 +41,10 @@ export const sendChatMessage = (message, userId, token) => {
 };
 
 // Send SOS alert
-export const sendSOSAlert = (userId, location, token) => {
+export const sendSOSAlert = (userId, location, token, type = 'emergency') => {
   return axios.post(
     `${API_BASE_URL}/sos/alert`,
-    { userId, location },
+    { userId, location, type },
     { headers: { Authorization: `Bearer ${token}` } }
   );
 };

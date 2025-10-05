@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Medicine = require('../models/Medicine');
-const { decrypt } = require('../middleware/encryption');
+const EmergencyContact = require('../models/EmergencyContact');
+const { encrypt, decrypt } = require('../middleware/encryption');
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
@@ -30,8 +31,10 @@ const updateUserProfile = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
+      user.elderlyName = req.body.elderlyName || user.elderlyName;
+      user.elderlyEmail = req.body.elderlyEmail || user.elderlyEmail;
+      user.caregiverName = req.body.caregiverName || user.caregiverName;
+      user.caregiverEmail = req.body.caregiverEmail || user.caregiverEmail;
       user.address = req.body.address ? encrypt(req.body.address).encryptedData : user.address;
       user.medicalHistory = req.body.medicalHistory ? encrypt(req.body.medicalHistory).encryptedData : user.medicalHistory;
 
@@ -39,8 +42,10 @@ const updateUserProfile = async (req, res) => {
 
       res.json({
         _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
+        elderlyName: updatedUser.elderlyName,
+        elderlyEmail: updatedUser.elderlyEmail,
+        caregiverName: updatedUser.caregiverName,
+        caregiverEmail: updatedUser.caregiverEmail,
       });
     } else {
       res.status(404).json({ message: 'User not found' });
@@ -56,12 +61,14 @@ const updateUserProfile = async (req, res) => {
 const getDashboard = async (req, res) => {
   try {
     const medicines = await Medicine.find({ user: req.user._id });
+    const emergencyContacts = await EmergencyContact.find({ user: req.user._id });
     // Calculate adherence, etc.
     const adherence = 80; // Mock
     const recoveryGraph = []; // Mock
 
     res.json({
       medicines,
+      emergencyContacts,
       adherence,
       recoveryGraph,
     });

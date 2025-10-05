@@ -17,14 +17,14 @@ const getMedicines = async (req, res) => {
 // @route   POST /api/medicines
 // @access  Private
 const addMedicine = async (req, res) => {
-  const { name, dosage, time, prescribedDays, doctorContact } = req.body;
+  const { name, dosage, times, prescribedDays, doctorContact } = req.body;
 
   try {
     const medicine = await Medicine.create({
       user: req.user._id,
       name,
       dosage,
-      time,
+      times,
       prescribedDays,
       doctorContact,
     });
@@ -69,12 +69,52 @@ const markTaken = async (req, res) => {
     const medicine = await Medicine.findById(req.params.id);
 
     if (medicine) {
-      medicine.taken.push({ date: new Date(), time: req.body.time });
+      const takenTime = req.body.time || new Date().toLocaleTimeString();
+      medicine.taken.push({ date: new Date(), time: takenTime });
       await medicine.save();
+
+      // Log the event
+      const Event = require('../models/Event');
+      await Event.create({
+        user: req.user._id,
+        type: 'medicine_taken',
+        description: `Took ${medicine.name} (${medicine.dosage}) at ${takenTime}`,
+        metadata: {
+          medicineId: medicine._id,
+          medicineName: medicine.name,
+          dosage: medicine.dosage,
+          scheduledTime: takenTime,
+        },
+      });
+
       res.json(medicine);
     } else {
       res.status(404).json({ message: 'Medicine not found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get missed medicines
+// @route   GET /api/medicines/missed
+// @access  Private
+const getMissedMedicines = async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ user: req.user._id });
+    const now = new Date();
+    const today = now.toDateString();
+    const currentHour = now.getHours();
+
+    const missed = medicines.filter(med => {
+      return med.times.some(time => {
+        const medHour = parseInt(time.split(':')[0]);
+        const takenToday = med.taken.some(t => new Date(t.date).toDateString() === today && t.time === time);
+        return !takenToday && medHour <= currentHour;
+      });
+    });
+
+    res.json(missed);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -85,4 +125,5 @@ module.exports = {
   addMedicine,
   scanPrescription,
   markTaken,
+  getMissedMedicines,
 };

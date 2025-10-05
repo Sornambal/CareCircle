@@ -2,37 +2,55 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  role: {
+  // Elderly details
+  elderlyName: {
     type: String,
-    enum: ['elderly', 'helper'],
-    required: true,
+    required: [true, 'Elderly name is required'],
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  age: {
+  elderlyAge: {
     type: Number,
-    required: true,
+    required: [true, 'Elderly age is required'],
   },
-  phone: {
+  elderlyPhone: {
     type: String,
-    required: true,
+    required: [true, 'Elderly phone is required'],
     unique: true,
   },
-  email: {
+  elderlyEmail: {
     type: String,
-    required: true,
+    required: [true, 'Elderly email is required'],
   },
+  // Caregiver details
+  caregiverName: {
+    type: String,
+    required: [true, 'Caregiver name is required'],
+  },
+  caregiverPhone: {
+    type: String,
+    required: [true, 'Caregiver phone is required'],
+  },
+  caregiverEmail: {
+    type: String,
+    required: [true, 'Caregiver email is required'],
+  },
+  preferredLanguage: {
+    type: String,
+    default: 'English',
+  },
+  // Auth
+  password: {
+    type: String,
+    required: [true, 'Password is required'], // For caregiver
+  },
+  deviceToken: {
+    type: String, // For elderly login-free
+  },
+  // Optional
   address: {
     type: String,
   },
   medicalHistory: {
     type: String,
-  },
-  password: {
-    type: String,
-    required: true,
   },
   otp: {
     type: String,

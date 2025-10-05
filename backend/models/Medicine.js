@@ -14,8 +14,8 @@ const medicineSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  time: {
-    type: String, // e.g., 'before food', 'after food'
+  times: {
+    type: [String], // e.g., ['08:00', '20:00']
     required: true,
   },
   prescribedDays: {

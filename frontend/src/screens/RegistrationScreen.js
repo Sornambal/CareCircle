@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../utils/api';
-import { Box, Button, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Alert } from '@mui/material';
+import { Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
 
 const RegistrationScreen = () => {
-  const [role, setRole] = useState('elderly');
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    phone: '',
-    email: '',
+    elderlyName: '',
+    elderlyAge: '',
+    elderlyPhone: '',
+    elderlyEmail: '',
+    caregiverName: '',
+    caregiverPhone: '',
+    caregiverEmail: '',
+    preferredLanguage: 'English',
     password: '',
-    address: '',
-    medicalHistory: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -22,17 +23,12 @@ const RegistrationScreen = () => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
 
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const dataToSend = { ...formData, role };
-      const response = await registerUser(dataToSend);
+      const response = await registerUser(formData);
       if (response.status === 201 && response.data._id) {
         alert('Registration successful! Please login.');
         navigate('/login');
@@ -46,27 +42,18 @@ const RegistrationScreen = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', p: 3, boxShadow: 3, borderRadius: 2, mt: 5 }}>
+    <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, boxShadow: 3, borderRadius: 2, mt: 5 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Register
+        Unified Account Registration
       </Typography>
       <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="role-label">Role</InputLabel>
-          <Select
-            labelId="role-label"
-            value={role}
-            label="Role"
-            onChange={handleRoleChange}
-          >
-            <MenuItem value="elderly">Elderly User</MenuItem>
-            <MenuItem value="helper">Helper</MenuItem>
-          </Select>
-        </FormControl>
+        <Typography variant="h6" gutterBottom>
+          Elderly Person's Details
+        </Typography>
         <TextField
-          label="Name"
-          name="name"
-          value={formData.name}
+          label="Full Name"
+          name="elderlyName"
+          value={formData.elderlyName}
           onChange={handleChange}
           fullWidth
           required
@@ -74,9 +61,9 @@ const RegistrationScreen = () => {
         />
         <TextField
           label="Age"
-          name="age"
+          name="elderlyAge"
           type="number"
-          value={formData.age}
+          value={formData.elderlyAge}
           onChange={handleChange}
           fullWidth
           required
@@ -84,24 +71,74 @@ const RegistrationScreen = () => {
         />
         <TextField
           label="Phone Number"
-          name="phone"
+          name="elderlyPhone"
           type="tel"
-          value={formData.phone}
+          value={formData.elderlyPhone}
           onChange={handleChange}
           fullWidth
           required
           margin="normal"
         />
         <TextField
-          label="Email"
-          name="email"
+          label="Email Address"
+          name="elderlyEmail"
           type="email"
-          value={formData.email}
+          value={formData.elderlyEmail}
           onChange={handleChange}
           fullWidth
           required
           margin="normal"
         />
+
+        <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+          Caregiver's Details
+        </Typography>
+        <TextField
+          label="Full Name"
+          name="caregiverName"
+          value={formData.caregiverName}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
+        />
+        <TextField
+          label="Phone Number"
+          name="caregiverPhone"
+          type="tel"
+          value={formData.caregiverPhone}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
+        />
+        <TextField
+          label="Email Address"
+          name="caregiverEmail"
+          type="email"
+          value={formData.caregiverEmail}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
+        />
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="preferredLanguage-label">Preferred Language</InputLabel>
+          <Select
+            labelId="preferredLanguage-label"
+            name="preferredLanguage"
+            value={formData.preferredLanguage}
+            label="Preferred Language"
+            onChange={handleChange}
+          >
+            <MenuItem value="English">English</MenuItem>
+            <MenuItem value="Tamil">Tamil</MenuItem>
+            <MenuItem value="Spanish">Spanish</MenuItem>
+            <MenuItem value="French">French</MenuItem>
+          </Select>
+        </FormControl>
+
         <TextField
           label="Password"
           name="password"
@@ -112,37 +149,14 @@ const RegistrationScreen = () => {
           required
           margin="normal"
         />
-        <TextField
-          label="Address (optional)"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Medical History (optional)"
-          name="medicalHistory"
-          value={formData.medicalHistory}
-          onChange={handleChange}
-          fullWidth
-          multiline
-          rows={3}
-          margin="normal"
-        />
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 3 }}>
           {loading ? 'Registering...' : 'Register'}
         </Button>
       </form>
-      <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Typography variant="body2">
-          Already have an account?{' '}
-          <Button variant="text" onClick={() => window.location.href = '/login'}>
-            Login here
-          </Button>
-        </Typography>
-      </Box>
+      <Typography sx={{ mt: 2, textAlign: 'center' }}>
+        Already have an account? <Link to="/login">Login</Link>
+      </Typography>
     </Box>
   );
 };

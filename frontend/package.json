@@ -1,9 +1,9 @@
 {
-  "name": "carecircle-web",
+  "name": "carecircle-frontend",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.14.0",
+    "@emotion/react": "^11.14.1",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^5.18.0",
     "@mui/material": "^5.18.0",
@@ -11,7 +11,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.1",
-    "react-scripts": "^0.0.0",
+    "react-scripts": "^5.0.1",
     "recharts": "^3.2.1",
     "web-vitals": "^2.1.4"
   },
@@ -20,12 +20,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

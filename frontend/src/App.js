@@ -8,7 +8,7 @@ import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui
 const RegistrationScreen = React.lazy(() => import('./screens/RegistrationScreen'));
 const LoginScreen = React.lazy(() => import('./screens/LoginScreen'));
 const DashboardScreen = React.lazy(() => import('./screens/DashboardScreen'));
-const ChatbotScreen = React.lazy(() => import('./screens/ChatbotScreen'));
+const HomeScreen = React.lazy(() => import('./screens/HomeScreen'));
 
 const theme = createTheme({
   palette: {
@@ -52,6 +52,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   if (!token || location.pathname === '/' || location.pathname === '/login') {
     return null;
@@ -63,12 +64,11 @@ const Navigation = () => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           CareCircle
         </Typography>
-        <Button color="inherit" onClick={() => navigate('/dashboard')}>
-          Dashboard
-        </Button>
-        <Button color="inherit" onClick={() => navigate('/chatbot')}>
-          Chatbot
-        </Button>
+        {user.role === 'caregiver' && (
+          <Button color="inherit" onClick={() => navigate('/dashboard')}>
+            Dashboard
+          </Button>
+        )}
         <Button color="inherit" onClick={() => {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
@@ -94,7 +94,6 @@ function App() {
                 <Route path="/" element={<RegistrationScreen />} />
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/dashboard" element={<DashboardScreen />} />
-                <Route path="/chatbot" element={<ChatbotScreen />} />
               </Routes>
             </Suspense>
           </Box>
