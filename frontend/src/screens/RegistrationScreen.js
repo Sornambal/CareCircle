@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../utils/api';
-import { Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
+import { Box, Button, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Alert, Card, CardContent, Avatar } from '@mui/material';
+import { PersonAdd, Favorite } from '@mui/icons-material';
 
 const RegistrationScreen = () => {
   const [formData, setFormData] = useState({
@@ -42,121 +43,185 @@ const RegistrationScreen = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, boxShadow: 3, borderRadius: 2, mt: 5 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Unified Account Registration
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Typography variant="h6" gutterBottom>
-          Elderly Person's Details
-        </Typography>
-        <TextField
-          label="Full Name"
-          name="elderlyName"
-          value={formData.elderlyName}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Age"
-          name="elderlyAge"
-          type="number"
-          value={formData.elderlyAge}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Phone Number"
-          name="elderlyPhone"
-          type="tel"
-          value={formData.elderlyPhone}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Email Address"
-          name="elderlyEmail"
-          type="email"
-          value={formData.elderlyEmail}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
+    <Box sx={{
+      minHeight: '100vh',
+      background: '#F7F9FA',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      py: 4
+    }}>
+      <Card sx={{
+        maxWidth: 600,
+        width: '100%',
+        mx: 3,
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: 4,
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.18)'
+      }}>
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Avatar sx={{
+              width: 80,
+              height: 80,
+              mx: 'auto',
+              mb: 2,
+              bgcolor: '#007C91',
+              fontSize: 36
+            }}>
+              <PersonAdd />
+            </Avatar>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#263238', fontWeight: 'bold' }}>
+              Join CareCircle
+            </Typography>
+            <Typography variant="body1" sx={{ color: '#546E7A' }}>
+              Create your unified account for elderly care management
+            </Typography>
+          </Box>
 
-        <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
-          Caregiver's Details
-        </Typography>
-        <TextField
-          label="Full Name"
-          name="caregiverName"
-          value={formData.caregiverName}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Phone Number"
-          name="caregiverPhone"
-          type="tel"
-          value={formData.caregiverPhone}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Email Address"
-          name="caregiverEmail"
-          type="email"
-          value={formData.caregiverEmail}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
+          <form onSubmit={handleSubmit}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#007C91', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Favorite sx={{ fontSize: 20 }} />
+              Elderly Person's Details
+            </Typography>
+            <TextField
+              label="Full Name"
+              name="elderlyName"
+              value={formData.elderlyName}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Age"
+              name="elderlyAge"
+              type="number"
+              value={formData.elderlyAge}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Phone Number"
+              name="elderlyPhone"
+              type="tel"
+              value={formData.elderlyPhone}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Email Address"
+              name="elderlyEmail"
+              type="email"
+              value={formData.elderlyEmail}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="preferredLanguage-label">Preferred Language</InputLabel>
-          <Select
-            labelId="preferredLanguage-label"
-            name="preferredLanguage"
-            value={formData.preferredLanguage}
-            label="Preferred Language"
-            onChange={handleChange}
-          >
-            <MenuItem value="English">English</MenuItem>
-            <MenuItem value="Tamil">Tamil</MenuItem>
-            <MenuItem value="Spanish">Spanish</MenuItem>
-            <MenuItem value="French">French</MenuItem>
-          </Select>
-        </FormControl>
+            <Typography variant="h6" gutterBottom sx={{ mt: 4, color: '#007C91', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <PersonAdd sx={{ fontSize: 20 }} />
+              Caregiver's Details
+            </Typography>
+            <TextField
+              label="Full Name"
+              name="caregiverName"
+              value={formData.caregiverName}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Phone Number"
+              name="caregiverPhone"
+              type="tel"
+              value={formData.caregiverPhone}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Email Address"
+              name="caregiverEmail"
+              type="email"
+              value={formData.caregiverEmail}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
 
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 3 }}>
-          {loading ? 'Registering...' : 'Register'}
-        </Button>
-      </form>
-      <Typography sx={{ mt: 2, textAlign: 'center' }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </Typography>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="preferredLanguage-label">Preferred Language</InputLabel>
+              <Select
+                labelId="preferredLanguage-label"
+                name="preferredLanguage"
+                value={formData.preferredLanguage}
+                label="Preferred Language"
+                onChange={handleChange}
+                sx={{ borderRadius: 2 }}
+              >
+                <MenuItem value="English">English</MenuItem>
+                <MenuItem value="Tamil">Tamil</MenuItem>
+                <MenuItem value="Hindi">Hindi</MenuItem>
+                <MenuItem value="Malayalam">Malayalam</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            {error && <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>{error}</Alert>}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={loading}
+              sx={{
+                mt: 3,
+                py: 1.5,
+                borderRadius: 2,
+                background: '#007C91',
+                '&:hover': { background: '#005F6B' },
+                fontSize: '1.1rem',
+                fontWeight: 'bold'
+              }}
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </Button>
+          </form>
+          <Typography sx={{ mt: 3, textAlign: 'center', color: '#546E7A' }}>
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: '#007C91', textDecoration: 'none', fontWeight: 'bold' }}>
+              Login here
+            </Link>
+          </Typography>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

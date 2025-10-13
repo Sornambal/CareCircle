@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../utils/api';
-import { Box, Button, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Alert, CircularProgress } from '@mui/material';
+import { Box, Button, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Alert, CircularProgress, Card, CardContent, Avatar } from '@mui/material';
+import { Login, Favorite } from '@mui/icons-material';
 
 const LoginScreen = () => {
   const [role, setRole] = useState('elderly');
@@ -77,60 +78,123 @@ const LoginScreen = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 400, mx: 'auto', p: 3, boxShadow: 3, borderRadius: 2, mt: 5 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {role === 'caregiver' ? 'Caregiver Login' : 'Elderly User Login'}
-      </Typography>
-      <Typography variant="body2" sx={{ mb: 2 }}>
-        {role === 'caregiver' ? 'Enter your caregiver details (name, phone, password) to access the dashboard.' : 'Enter caregiver details to setup or login as elderly user.'}
-      </Typography>
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="role-label">Login As</InputLabel>
-        <Select
-          labelId="role-label"
-          value={role}
-          label="Login As"
-          onChange={handleRoleChange}
-        >
-          <MenuItem value="elderly">Elderly User</MenuItem>
-          <MenuItem value="caregiver">Caregiver</MenuItem>
-        </Select>
-      </FormControl>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Phone Number"
-          name="phone"
-          type="tel"
-          value={formData.phone}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          fullWidth
-          required
-          margin="normal"
-        />
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ mt: 3 }}>
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-      </form>
+    <Box sx={{
+      minHeight: '100vh',
+      background: '#F7F9FA',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      py: 4
+    }}>
+      <Card sx={{
+        maxWidth: 450,
+        width: '100%',
+        mx: 3,
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: 4,
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.18)'
+      }}>
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Avatar sx={{
+              width: 80,
+              height: 80,
+              mx: 'auto',
+              mb: 2,
+              bgcolor: '#007C91',
+              fontSize: 36
+            }}>
+              <Login />
+            </Avatar>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#263238', fontWeight: 'bold' }}>
+              Welcome Back
+            </Typography>
+            <Typography variant="body1" sx={{ color: '#546E7A' }}>
+              Sign in to your CareCircle account
+            </Typography>
+          </Box>
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="role-label">Login As</InputLabel>
+            <Select
+              labelId="role-label"
+              value={role}
+              label="Login As"
+              onChange={handleRoleChange}
+              sx={{ borderRadius: 2 }}
+            >
+              <MenuItem value="elderly">Elderly User</MenuItem>
+              <MenuItem value="caregiver">Caregiver</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Typography variant="body2" sx={{ mb: 2, color: '#546E7A', textAlign: 'center' }}>
+            {role === 'caregiver' ? 'Enter your caregiver details to access the dashboard.' : 'Enter caregiver details to setup or login as elderly user.'}
+          </Typography>
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Phone Number"
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              fullWidth
+              required
+              margin="normal"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            {error && <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>{error}</Alert>}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={loading}
+              sx={{
+                mt: 3,
+                py: 1.5,
+                borderRadius: 2,
+                background: '#007C91',
+                '&:hover': { background: '#005F6B' },
+                fontSize: '1.1rem',
+                fontWeight: 'bold'
+              }}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
+          </form>
+
+          <Typography sx={{ mt: 3, textAlign: 'center', color: '#546E7A' }}>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: '#007C91', textDecoration: 'none', fontWeight: 'bold' }}>
+              Register here
+            </Link>
+          </Typography>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

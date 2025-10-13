@@ -48,6 +48,7 @@ const registerUser = async (req, res) => {
       _id: user._id,
       elderlyName: user.elderlyName,
       caregiverName: user.caregiverName,
+      preferredLanguage: user.preferredLanguage,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -90,6 +91,7 @@ const login = async (req, res) => {
       _id: user._id,
       elderlyName: user.elderlyName,
       caregiverName: user.caregiverName,
+      preferredLanguage: user.preferredLanguage,
       role: role || 'caregiver',
       token: generateToken(user._id),
       deviceToken: user.deviceToken,
@@ -97,6 +99,7 @@ const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
 
 // @desc    Auth user & get token (legacy)
 // @route   POST /api/auth/login
@@ -108,13 +111,14 @@ const authUser = async (req, res) => {
     const user = await User.findOne({ elderlyPhone: phone });
 
     if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        elderlyName: user.elderlyName,
-        elderlyEmail: user.elderlyEmail,
-        caregiverName: user.caregiverName,
-        token: generateToken(user._id),
-      });
+    res.json({
+      _id: user._id,
+      elderlyName: user.elderlyName,
+      elderlyEmail: user.elderlyEmail,
+      caregiverName: user.caregiverName,
+      preferredLanguage: user.preferredLanguage,
+      token: generateToken(user._id),
+    });
     } else {
       res.status(401).json({ message: 'Invalid phone or password' });
     }
@@ -132,13 +136,14 @@ const elderlyLogin = async (req, res) => {
     if (user) {
       // Generate token without password
       const token = generateToken(user._id);
-      res.json({
-        _id: user._id,
-        name: user.elderlyName,
-        email: user.elderlyEmail,
-        role: 'elderly',
-        token,
-      });
+    res.json({
+      _id: user._id,
+      name: user.elderlyName,
+      email: user.elderlyEmail,
+      preferredLanguage: user.preferredLanguage,
+      role: 'elderly',
+      token,
+    });
     } else {
       res.status(401).json({ message: 'Invalid elderly user phone number' });
     }
@@ -205,4 +210,3 @@ module.exports = {
   verifyOTP,
   elderlyLogin,
 };
-}ik

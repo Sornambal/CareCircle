@@ -1,16 +1,91 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { sendSOSAlert } from '../utils/api';
 
-const SOSButton = ({ type }) => {
+// Capacitor imports for mobile notifications
+let LocalNotifications = null;
+let Capacitor = null;
+try {
+  Capacitor = require('@capacitor/core').Capacitor;
+  LocalNotifications = require('@capacitor/local-notifications').LocalNotifications;
+} catch (e) {
+  console.log('Capacitor not available, running in web mode');
+}
+
+const SOSButton = ({ type, user }) => {
   const [countdown, setCountdown] = useState(10);
   const [showDialog, setShowDialog] = useState(false);
   const [countdownInterval, setCountdownInterval] = useState(null);
+  const [reminderInterval, setReminderInterval] = useState(null);
+  const [alertSent, setAlertSent] = useState(false);
+
+  // Voice alert function with multilingual support
+  const playVoiceAlert = (message) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(message);
+
+      // Set language based on user's preference
+      const langCode = user?.preferredLanguage === 'Tamil' ? 'ta-IN' :
+                      user?.preferredLanguage === 'Hindi' ? 'hi-IN' :
+                      user?.preferredLanguage === 'Malayalam' ? 'ml-IN' : 'en-IN';
+      utterance.lang = langCode;
+      utterance.rate = 0.8;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+
+      // Try to find appropriate voice
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(voice =>
+        voice.lang.startsWith(langCode.split('-')[0])
+      );
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  // Mobile notification function
+  const sendMobileNotification = async (title, body) => {
+    if (LocalNotifications && Capacitor?.isNativePlatform()) {
+      try {
+        await LocalNotifications.schedule({
+          notifications: [{
+            id: Date.now(),
+            title: title,
+            body: body,
+            sound: 'default',
+            actionTypeId: 'SOS_ALERT',
+            extra: {
+              sosType: type,
+              timestamp: new Date().toISOString()
+            }
+          }]
+        });
+        console.log('Mobile notification scheduled');
+      } catch (error) {
+        console.error('Failed to schedule mobile notification:', error);
+      }
+    }
+  };
 
   const handleSOSClick = () => {
     setShowDialog(true);
     setCountdown(10);
+    setAlertSent(false);
+
+    // Play initial voice alert in user's preferred language
+    const initialMessage = user?.preferredLanguage === 'Tamil' ? "SOS எச்சரிக்கை தொடங்கப்பட்டது. உதவி வந்துகொண்டிருக்கிறது!" :
+                          user?.preferredLanguage === 'Hindi' ? "SOS अलर्ट शुरू किया गया। मदद आ रही है!" :
+                          user?.preferredLanguage === 'Malayalam' ? "SOS അലേർട്ട് ആരംഭിച്ചു. സഹായം വരുന്നു!" :
+                          "SOS alert initiated. Help is on the way!";
+    playVoiceAlert(initialMessage);
+
+    // Set up 3 reminders with 1-minute intervals
+    let reminderCount = 0;
+    const maxReminders = 3;
 
     const interval = setInterval(() => {
       setCountdown((prev) => {
@@ -23,27 +98,85 @@ const SOSButton = ({ type }) => {
       });
     }, 1000);
 
+    // Set up reminder intervals (every 1 minute for 3 reminders)
+    const reminderInterval = setInterval(() => {
+      reminderCount++;
+      if (reminderCount <= maxReminders) {
+        const reminderMessage = user?.preferredLanguage === 'Tamil' ? `SOS எச்சரிக்கை நினைவூட்டல் ${reminderCount}. உதவி தேவையா?` :
+                               user?.preferredLanguage === 'Hindi' ? `SOS अलर्ट रिमाइंडर ${reminderCount}। क्या मदद चाहिए?` :
+                               user?.preferredLanguage === 'Malayalam' ? `SOS അലേർട്ട് റിമൈൻഡർ ${reminderCount}। സഹായം ആവശ്യമാണോ?` :
+                               `SOS alert reminder ${reminderCount}. Do you need help?`;
+        playVoiceAlert(reminderMessage);
+      } else {
+        clearInterval(reminderInterval);
+      }
+    }, 60000); // 1 minute intervals
+
     setCountdownInterval(interval);
+    setReminderInterval(reminderInterval);
   };
 
   const handleRejectSOS = () => {
     if (countdownInterval) {
       clearInterval(countdownInterval);
     }
+    if (reminderInterval) {
+      clearInterval(reminderInterval);
+    }
     setShowDialog(false);
     setCountdown(10);
+    setAlertSent(false);
+
+    // Play cancellation voice alert
+    playVoiceAlert("SOS alert cancelled.");
   };
 
   const triggerSOS = async () => {
     try {
-      await sendSOSAlert(null, null, localStorage.getItem('token'));
-      alert('SOS alert sent successfully!');
+      const location = { lat: 0, lng: 0 }; // Mock location - in real app, get from GPS
+      const sosType = type === 'all' ? 'emergency' : 'family';
+
+      await sendSOSAlert(user?._id, location, localStorage.getItem('token'), sosType);
+
+      setAlertSent(true);
+
+      // Play success voice alert
+      playVoiceAlert("SOS alert sent successfully. Help is on the way!");
+
+      // Send mobile notification
+      const alertTypeText = type === 'all' ? 'EMERGENCY SOS' : 'FAMILY SOS';
+      await sendMobileNotification(
+        '🚨 SOS Alert Sent',
+        `${alertTypeText} alert has been sent to your emergency contacts.`
+      );
+
+      // Auto-close dialog after 3 seconds
+      setTimeout(() => {
+        setShowDialog(false);
+        setCountdown(10);
+        setAlertSent(false);
+      }, 3000);
+
     } catch (error) {
       console.error('Error sending SOS:', error);
+      playVoiceAlert("Failed to send SOS alert. Please try again.");
       alert('Failed to send SOS alert');
+      setShowDialog(false);
+      setCountdown(10);
     }
-    setShowDialog(false);
   };
+
+  // Cleanup intervals on unmount
+  useEffect(() => {
+    return () => {
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+      if (reminderInterval) {
+        clearInterval(reminderInterval);
+      }
+    };
+  }, [countdownInterval, reminderInterval]);
 
   return (
     <>
@@ -52,43 +185,98 @@ const SOSButton = ({ type }) => {
         color="error"
         size="large"
         onClick={handleSOSClick}
+        disabled={showDialog}
         sx={{
           minWidth: 120,
           minHeight: 60,
           fontSize: '1.2rem',
           fontWeight: 'bold',
+          boxShadow: 3,
+          '&:hover': {
+            boxShadow: 6,
+          },
         }}
       >
+        <Warning sx={{ mr: 1 }} />
         SOS {type === 'all' ? 'All' : 'Relatives'}
       </Button>
 
-      <Dialog open={showDialog} onClose={handleRejectSOS} fullScreen>
+      <Dialog
+        open={showDialog}
+        onClose={handleRejectSOS}
+        fullScreen
+        PaperProps={{
+          sx: {
+            backgroundColor: 'rgba(244, 67, 54, 0.95)', // Red overlay
+            color: 'white',
+          }
+        }}
+      >
         <DialogTitle sx={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }}>
-          Sending emergency alert in...
+          {alertSent ? '✅ SOS Alert Sent!' : '🚨 Sending Emergency Alert...'}
         </DialogTitle>
         <DialogContent sx={{ textAlign: 'center', p: 4 }}>
-          <Typography variant="h1" sx={{ fontSize: '6rem', fontWeight: 'bold', color: 'error.main' }}>
-            {countdown}
-          </Typography>
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Tap "Reject SOS" to cancel
-          </Typography>
+          {!alertSent ? (
+            <>
+              <Typography variant="h1" sx={{ fontSize: '8rem', fontWeight: 'bold', color: 'white', mb: 2 }}>
+                {countdown}
+              </Typography>
+              <Typography variant="h5" sx={{ mb: 2 }}>
+                {type === 'all' ? 'Alerting ALL emergency contacts' : 'Alerting family contacts only'}
+              </Typography>
+              <Typography variant="h6">
+                Tap "Cancel Alert" to stop
+              </Typography>
+            </>
+          ) : (
+            <Box>
+              <Typography variant="h4" sx={{ mb: 2 }}>
+                Voice and text alerts sent to:
+              </Typography>
+              <Typography variant="h6">
+                {type === 'all' ? '• Ambulance services\n• Caretakers\n• Family members' : '• Caretakers\n• Family members'}
+              </Typography>
+            </Box>
+          )}
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', p: 4 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            onClick={handleRejectSOS}
-            sx={{
-              minWidth: 200,
-              minHeight: 80,
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-            }}
-          >
-            Reject SOS
-          </Button>
+          {!alertSent ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={handleRejectSOS}
+              sx={{
+                minWidth: 250,
+                minHeight: 80,
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                backgroundColor: 'white',
+                color: 'error.main',
+                '&:hover': {
+                  backgroundColor: 'grey.100',
+                },
+              }}
+            >
+              Cancel Alert
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => setShowDialog(false)}
+              sx={{
+                minWidth: 200,
+                minHeight: 60,
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+                backgroundColor: 'white',
+                color: 'success.main',
+              }}
+            >
+              OK
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

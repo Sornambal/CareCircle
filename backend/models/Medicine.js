@@ -36,6 +36,20 @@ const medicineSchema = new mongoose.Schema({
     date: Date,
     time: String,
   }],
+  lastReminderSent: {
+    type: Date,
+  },
+  reminderCount: {
+    type: Number,
+    default: 0,
+  },
+  lastTaken: {
+    type: Date,
+  },
+  takenToday: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Medicine', medicineSchema);

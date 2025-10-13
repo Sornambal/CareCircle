@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Avatar, Button, Stack } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import PersonIcon from '@mui/icons-material/Person';
 
 const ProfileCard = ({ user }) => {
   if (!user) return null;
@@ -30,7 +31,9 @@ const ProfileCard = ({ user }) => {
         backgroundColor: '#f9f9f9',
       }}
     >
-      <Avatar sx={{ width: 64, height: 64 }}>{name ? name.charAt(0) : '?'}</Avatar>
+      <Avatar sx={{ width: 64, height: 64, bgcolor: '#007C91' }}>
+        {name ? name.charAt(0) : <PersonIcon />}
+      </Avatar>
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="h6">{name}</Typography>
         <Typography variant="body2">Age: {age}</Typography>

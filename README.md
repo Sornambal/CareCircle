@@ -16,6 +16,7 @@ CareCircle is a full-stack web application designed to assist elderly users with
   - **Emergency SOS**: Sends alerts to all contacts (ambulance, caretaker, relative)
   - **Family SOS**: Sends alerts only to caretaker and relative
 - Event logging for medication adherence and SOS events
+- PDF report generation for medication adherence with visual charts and detailed statistics
 - Backend API with MongoDB for data persistence
 - Middleware for authentication and encryption
 - SMS notifications via Twilio for SOS alerts
@@ -97,6 +98,7 @@ The frontend will run on `http://localhost:3000`.
 ### Frontend (`frontend/`)
 
 - `src/components/`: Reusable React components such as MedicineCard, ReportCard, RecoveryGraph, ProfileCard, SOSButton.
+- `src/hooks/`: Custom hooks for notifications and socket connections.
 - `src/screens/`: React screen components for Registration, CaregiverLogin, Home, Dashboard, etc.
 - `src/utils/`: API utility functions for making HTTP requests to the backend.
 - `src/App.js`: Main React app component and routing.
@@ -117,7 +119,7 @@ The frontend will run on `http://localhost:3000`.
 - Medication reminder cycle with confirmation
 
 ### Module 3: Emergency Experience
-- SOS trigger with countdown and reject option
+- SOS trigger with countdown with reject option
 - Alert dissemination to emergency contacts
 
 ### Module 4: Caregiver Experience
@@ -135,5 +137,3 @@ The frontend will run on `http://localhost:3000`.
 - Comprehensive testing and performance optimization
 
 ---
-
-

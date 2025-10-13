@@ -1,14 +1,15 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui/material';
 
+import RegistrationScreen from './screens/RegistrationScreen';
+import LoginScreen from './screens/LoginScreen';
+import DashboardScreen from './screens/DashboardScreen';
+import SOSNotification from './components/SOSNotification';
+import useSocket from './hooks/useSocket';
 
-const RegistrationScreen = React.lazy(() => import('./screens/RegistrationScreen'));
-const LoginScreen = React.lazy(() => import('./screens/LoginScreen'));
-const DashboardScreen = React.lazy(() => import('./screens/DashboardScreen'));
-const HomeScreen = React.lazy(() => import('./screens/HomeScreen'));
 
 const theme = createTheme({
   palette: {
@@ -48,7 +49,7 @@ const theme = createTheme({
   },
 });
 
-const Navigation = () => {
+const Navigation = ({ sosNotification, onSOSClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const token = localStorage.getItem('token');
@@ -77,17 +78,34 @@ const Navigation = () => {
           Logout
         </Button>
       </Toolbar>
+      {/* SOS Notification Component */}
+      <SOSNotification notification={sosNotification} onClose={onSOSClose} />
     </AppBar>
   );
 };
 
 function App() {
+  const [sosNotification, setSOSNotification] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  // Handle SOS notifications
+  const handleSOSNotification = (notification) => {
+    setSOSNotification(notification);
+  };
+
+  const handleSOSClose = () => {
+    setSOSNotification(null);
+  };
+
+  // Initialize socket connection for logged-in users
+  useSocket(user._id, handleSOSNotification);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Navigation />
+          <Navigation sosNotification={sosNotification} onSOSClose={handleSOSClose} />
           <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
             <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
               <Routes>
