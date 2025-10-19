@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../utils/api';
-import { Box, Button, TextField, Typography, MenuItem, Select, FormControl, InputLabel, Alert, CircularProgress, Card, CardContent, Avatar } from '@mui/material';
-import { Login, Favorite } from '@mui/icons-material';
+import { FaUser, FaLock, FaPhone } from 'react-icons/fa';
+import './LoginScreen.css';
 
 const LoginScreen = () => {
+  const [isActive, setIsActive] = useState(false);
   const [role, setRole] = useState('elderly');
   const [formData, setFormData] = useState({
     name: '',
@@ -15,31 +16,6 @@ const LoginScreen = () => {
   const [autoLoading, setAutoLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  // Commenting out auto-login for elderly to disable VIP access card flow temporarily
-  // useEffect(() => {
-  //   const deviceToken = localStorage.getItem('deviceToken');
-  //   if (deviceToken) {
-  //     // Auto-login for elderly
-  //     setAutoLoading(true);
-  //     login({ deviceToken, role: 'elderly' })
-  //       .then((response) => {
-  //         localStorage.setItem('token', response.data.token);
-  //         localStorage.setItem('user', JSON.stringify(response.data));
-  //         navigate('/home');
-  //       })
-  //       .catch((err) => {
-  //         console.error('Auto-login failed:', err);
-  //         localStorage.removeItem('deviceToken');
-  //         setAutoLoading(false);
-  //       });
-  //   }
-  // }, [navigate]);
-
-  const handleRoleChange = (e) => {
-    setRole(e.target.value);
-    setError('');
-  };
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
@@ -68,134 +44,157 @@ const LoginScreen = () => {
     setLoading(false);
   };
 
+  const handleToggleToCaregiver = () => {
+    setIsActive(true);
+    setRole('caregiver');
+    setError('');
+    setFormData({ name: '', phone: '', password: '' });
+  };
+
+  const handleToggleToElderly = () => {
+    setIsActive(false);
+    setRole('elderly');
+    setError('');
+    setFormData({ name: '', phone: '', password: '' });
+  };
+
   if (autoLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Logging in...</Typography>
-      </Box>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Logging in...</p>
+      </div>
     );
   }
 
   return (
-    <Box sx={{
-      minHeight: '100vh',
-      background: '#F7F9FA',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      py: 4
-    }}>
-      <Card sx={{
-        maxWidth: 450,
-        width: '100%',
-        mx: 3,
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        borderRadius: 4,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.18)'
-      }}>
-        <CardContent sx={{ p: 4 }}>
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <Avatar sx={{
-              width: 80,
-              height: 80,
-              mx: 'auto',
-              mb: 2,
-              bgcolor: '#007C91',
-              fontSize: 36
-            }}>
-              <Login />
-            </Avatar>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#263238', fontWeight: 'bold' }}>
-              Welcome Back
-            </Typography>
-            <Typography variant="body1" sx={{ color: '#546E7A' }}>
-              Sign in to your CareCircle account
-            </Typography>
-          </Box>
-
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="role-label">Login As</InputLabel>
-            <Select
-              labelId="role-label"
-              value={role}
-              label="Login As"
-              onChange={handleRoleChange}
-              sx={{ borderRadius: 2 }}
-            >
-              <MenuItem value="elderly">Elderly User</MenuItem>
-              <MenuItem value="caregiver">Caregiver</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Typography variant="body2" sx={{ mb: 2, color: '#546E7A', textAlign: 'center' }}>
-            {role === 'caregiver' ? 'Enter your caregiver details to access the dashboard.' : 'Enter caregiver details to setup or login as elderly user.'}
-          </Typography>
-
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
+    <div className={`container ${isActive ? 'active' : ''}`}>
+      {/* Elderly User Login Form */}
+      <div className="form-box login">
+        <form onSubmit={handleSubmit}>
+          <h1>Hello Elderly User</h1>
+          <p className="subtitle">Enter caregiver details to setup or login</p>
+          
+          <div className="input-box">
+            <input
+              type="text"
               name="name"
+              placeholder="Name"
               value={formData.name}
               onChange={handleChange}
-              fullWidth
               required
-              margin="normal"
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
-            <TextField
-              label="Phone Number"
-              name="phone"
+            <FaUser className="input-icon" />
+          </div>
+
+          <div className="input-box">
+            <input
               type="tel"
+              name="phone"
+              placeholder="Phone Number"
               value={formData.phone}
               onChange={handleChange}
-              fullWidth
               required
-              margin="normal"
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
-            <TextField
-              label="Password"
-              name="password"
+            <FaPhone className="input-icon" />
+          </div>
+
+          <div className="input-box">
+            <input
               type="password"
+              name="password"
+              placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              fullWidth
               required
-              margin="normal"
-              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
-            {error && <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>{error}</Alert>}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={loading}
-              sx={{
-                mt: 3,
-                py: 1.5,
-                borderRadius: 2,
-                background: '#007C91',
-                '&:hover': { background: '#005F6B' },
-                fontSize: '1.1rem',
-                fontWeight: 'bold'
-              }}
-            >
-              {loading ? 'Signing In...' : 'Sign In'}
-            </Button>
-          </form>
+            <FaLock className="input-icon" />
+          </div>
 
-          <Typography sx={{ mt: 3, textAlign: 'center', color: '#546E7A' }}>
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color: '#007C91', textDecoration: 'none', fontWeight: 'bold' }}>
-              Register here
-            </Link>
-          </Typography>
-        </CardContent>
-      </Card>
-    </Box>
+          {error && !isActive && <div className="error-message">{error}</div>}
+
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+
+          <p className="register-link">
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
+        </form>
+      </div>
+
+      {/* Caregiver Login Form */}
+      <div className="form-box register">
+        <form onSubmit={handleSubmit}>
+          <h1>Welcome Caregiver</h1>
+          <p className="subtitle">Enter your details to access the dashboard</p>
+          
+          <div className="input-box">
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+            <FaUser className="input-icon" />
+          </div>
+
+          <div className="input-box">
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+            <FaPhone className="input-icon" />
+          </div>
+
+          <div className="input-box">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <FaLock className="input-icon" />
+          </div>
+
+          {error && isActive && <div className="error-message">{error}</div>}
+
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+
+          <p className="register-link">
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
+        </form>
+      </div>
+
+      {/* Toggle Panels */}
+      <div className="toggle-box">
+        <div className="toggle-panel toggle-left">
+          <h1>Click<br/> Below Caregiver!</h1>
+          <p>To view the Insights</p>
+          <button type="button" className="btn register-btn" onClick={handleToggleToCaregiver}>
+            Caregiver
+          </button>
+        </div>
+
+        <div className="toggle-panel toggle-right">
+          <h1>Oops...!<br/>UR Elderly User</h1>
+          <p>Click Here to Login</p>
+          <button type="button" className="btn login-btn" onClick={handleToggleToElderly}>
+            Elderly User
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
