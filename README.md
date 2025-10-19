@@ -51,7 +51,7 @@ cd CareCircle
 
 ### 2. Environment Configuration
 
-Create environment files for both backend and frontend:
+Create environment file for backend:
 
 #### Backend (.env in backend/ directory)
 ```env
@@ -62,11 +62,6 @@ TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_phone_number
 ENCRYPTION_KEY=your_32_character_encryption_key
-```
-
-#### Frontend (.env in frontend/ directory)
-```env
-REACT_APP_API_URL=http://localhost:5000
 ```
 
 ### 3. Backend Setup
