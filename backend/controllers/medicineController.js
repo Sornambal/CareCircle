@@ -40,7 +40,10 @@ const addMedicine = async (req, res) => {
 // @access  Private
 const scanPrescription = async (req, res) => {
   try {
-    const worker = await createWorker('eng');
+    const worker = createWorker();
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
     const { data: { text } } = await worker.recognize(req.file.path);
     await worker.terminate();
 
