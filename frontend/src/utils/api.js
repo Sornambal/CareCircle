@@ -82,6 +82,13 @@ export const sendSOSAlert = (userId, location, token, type = 'emergency') => {
   );
 };
 
+// New endpoint to trigger voice SOS via Twilio
+export const triggerVoiceSOS = (data, token) => {
+  // data should contain { elderlyName, alertType, caregiverPhone }
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  return axios.post(`${API_BASE_URL}/sos/trigger`, data, { headers });
+};
+
 // Get emergency contacts
 export const getEmergencyContacts = (token) => {
   return axios.get(`${API_BASE_URL}/emergency-contacts`, {

@@ -6,8 +6,10 @@ import RecoveryGraph from '../components/RecoveryGraph';
 import ProfileCard from '../components/ProfileCard';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
-import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar } from '@mui/material';
-import { Medication, AccessTime, Person, Phone, Email, LocalHospital, FamilyRestroom, Favorite } from '@mui/icons-material';
+import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar, IconButton } from '@mui/material';
+import { Medication, AccessTime, Person, Phone, Email, LocalHospital, FamilyRestroom, Favorite, VolumeUp } from '@mui/icons-material';
+
+import { getTranslation } from '../utils/translations';
 
 const DashboardScreen = () => {
   const [medicines, setMedicines] = useState([]);
@@ -43,6 +45,19 @@ const DashboardScreen = () => {
       return {};
     }
   });
+
+  const language = user?.preferredLanguage || 'English';
+
+  // Handler to change preferred language and persist it
+  const handleLanguageChange = (newLang) => {
+    const updatedUser = { ...(user || {}), preferredLanguage: newLang };
+    setUser(updatedUser);
+    try {
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (e) {
+      console.warn('Failed to persist user language preference', e);
+    }
+  };
 
   useEffect(() => {
     const loadMedicines = async () => {
@@ -108,7 +123,7 @@ const DashboardScreen = () => {
   };
 
   // Use the multilingual notifications hook
-  const { triggerDemoNotification } = useMultilingualNotifications(todaysMedicines, user, token, handleTakeMedicine);
+  const { triggerDemoNotification, testVoiceSupport } = useMultilingualNotifications(todaysMedicines, user, token, handleTakeMedicine);
 
   // Track triggered dialogs to prevent repeats
   const triggeredDialogs = useRef(new Set());
@@ -376,17 +391,45 @@ const DashboardScreen = () => {
                 <Favorite sx={{ color: '#ff6b6b', fontSize: 32 }} />
                 <Box>
                   <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: '#2c3e50' }}>
-                    CareCircle
+                    {getTranslation(language, 'careCircle')}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Your Health Companion
+                    {getTranslation(language, 'yourHealthCompanion')}
                   </Typography>
                 </Box>
               </Box>
+              {/* Language selector - available to all users */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Select
+                  value={language}
+                  size="small"
+                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  sx={{ minWidth: 120, bgcolor: 'background.paper' }}
+                >
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="Tamil">தமிழ் (Tamil)</MenuItem>
+                  <MenuItem value="Hindi">हिन्दी (Hindi)</MenuItem>
+                  <MenuItem value="Malayalam">മലയാളം (Malayalam)</MenuItem>
+                </Select>
+
+                <IconButton
+                  title="List voices & play test"
+                  onClick={() => {
+                    // Show available voices in console and play a demo utterance for debugging
+                    if (typeof testVoiceSupport === 'function') testVoiceSupport();
+                    // Trigger a quick demo speech for current language using a sample medicine
+                    const sampleMed = { name: 'Paracetamol', dosage: '1 tablet' };
+                    if (typeof triggerDemoNotification === 'function') triggerDemoNotification(sampleMed);
+                  }}
+                >
+                  <VolumeUp />
+                </IconButton>
+              </Box>
+
               {isElderly && (
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                   <Typography variant="body2" sx={{ color: 'text.secondary', mr: 1 }}>
-                    Need Help?
+                    {getTranslation(language, 'needHelpText')}
                   </Typography>
                   <SOSButton type="all" user={user} />
                   <SOSButton type="relatives" user={user} />
@@ -416,15 +459,15 @@ const DashboardScreen = () => {
                   👋
                 </Avatar>
                 <Typography variant="h4" gutterBottom sx={{ color: '#2c3e50', fontWeight: 'bold' }}>
-                  Hello {user?.elderlyName || 'Friend'}!
+                  {getTranslation(language, 'hello')} {user?.elderlyName || getTranslation(language, 'friend')}!
                 </Typography>
                 <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
-                  How are you feeling today?
+                  {getTranslation(language, 'howFeeling')}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
-                  <Chip label="😊 Great" variant="outlined" sx={{ borderRadius: 2 }} />
-                  <Chip label="😐 Okay" variant="outlined" sx={{ borderRadius: 2 }} />
-                  <Chip label="😟 Need Help" variant="outlined" sx={{ borderRadius: 2 }} />
+                  <Chip label={getTranslation(language, 'great')} variant="outlined" sx={{ borderRadius: 2 }} />
+                  <Chip label={getTranslation(language, 'okay')} variant="outlined" sx={{ borderRadius: 2 }} />
+                  <Chip label={getTranslation(language, 'needHelp')} variant="outlined" sx={{ borderRadius: 2 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -444,7 +487,7 @@ const DashboardScreen = () => {
               <CardContent>
                 <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Person sx={{ color: '#2196f3' }} />
-                  Quick Actions
+                  {getTranslation(language, 'quickActions')}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                   <Button
@@ -457,7 +500,7 @@ const DashboardScreen = () => {
                       boxShadow: '0 3px 5px 2px rgba(76, 175, 80, .3)',
                     }}
                   >
-                    Add Medicine
+                    {getTranslation(language, 'addMedicine')}
                   </Button>
                   <Button
                     variant="outlined"
@@ -465,7 +508,7 @@ const DashboardScreen = () => {
                     onClick={() => setContactModalOpen(true)}
                     sx={{ borderRadius: 2 }}
                   >
-                    Add Emergency Contact
+                    {getTranslation(language, 'addEmergencyContact')}
                   </Button>
                 </Box>
               </CardContent>
@@ -483,7 +526,7 @@ const DashboardScreen = () => {
               py: 4
             }}>
               <CircularProgress sx={{ mb: 2 }} />
-              <Typography>Loading your health information...</Typography>
+              <Typography>{getTranslation(language, 'loadingHealth')}</Typography>
             </Card>
           )}
           {error && (
@@ -527,7 +570,7 @@ const DashboardScreen = () => {
                 fontWeight: 'bold'
               }}>
                 <Medication sx={{ color: '#4caf50' }} />
-                Today's Medications
+                {getTranslation(language, 'todaysMedications')}
               </Typography>
 
               {todaysMedicines.length > 0 ? (
@@ -555,7 +598,7 @@ const DashboardScreen = () => {
                                   py: 1.5
                                 }}
                               >
-                                ✅ I have taken it
+                                ✅ {getTranslation(language, 'takenIt')}
                               </Button>
                             )}
                             {isCaregiver && (
@@ -588,10 +631,10 @@ const DashboardScreen = () => {
               ) : (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
-                    🎉 No medications scheduled for today!
+                    🎉 {getTranslation(language, 'noMedications')}
                   </Typography>
                   <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                    Take it easy and enjoy your day.
+                    {getTranslation(language, 'enjoyDay')}
                   </Typography>
                 </Box>
               )}
@@ -600,16 +643,16 @@ const DashboardScreen = () => {
 
           {/* Medication Reminder Dialog */}
           <Dialog open={reminderDialog.open} onClose={() => setReminderDialog({ open: false, medicine: null, scheduledTime: null })}>
-            <DialogTitle>Medication Reminder</DialogTitle>
+            <DialogTitle>{getTranslation(language, 'medicationReminder')}</DialogTitle>
             <DialogContent>
               <Typography variant="h6">
-                Time to take: {reminderDialog.medicine?.name}
+                {getTranslation(language, 'timeToTake')} {reminderDialog.medicine?.name}
               </Typography>
               <Typography variant="body1">
-                Dosage: {reminderDialog.medicine?.dosage}
+                {getTranslation(language, 'dosage')} {reminderDialog.medicine?.dosage}
               </Typography>
               <Typography variant="body2" color="textSecondary">
-                Scheduled time: {reminderDialog.scheduledTime}
+                {getTranslation(language, 'scheduledTime')} {reminderDialog.scheduledTime}
               </Typography>
               <Button
                 onClick={() => triggerDemoNotification(reminderDialog.medicine)}
@@ -617,7 +660,7 @@ const DashboardScreen = () => {
                 color="secondary"
                 sx={{ mt: 2 }}
               >
-                Test Notification ({user?.preferredLanguage || 'English'})
+                {getTranslation(language, 'testNotification')} ({user?.preferredLanguage || 'English'})
               </Button>
             </DialogContent>
             <DialogActions>
@@ -628,7 +671,7 @@ const DashboardScreen = () => {
                 size="large"
                 sx={{ fontSize: '1.2rem', padding: '12px 24px' }}
               >
-                I have taken it
+                {getTranslation(language, 'takenIt')}
               </Button>
             </DialogActions>
           </Dialog>
@@ -636,10 +679,10 @@ const DashboardScreen = () => {
           {isCaregiver && (
             <>
               <Typography variant="h6" gutterBottom>
-                Emergency Contacts
+                {getTranslation(language, 'emergencyContacts')}
               </Typography>
               <Button variant="contained" color="secondary" onClick={() => setContactModalOpen(true)} sx={{ mb: 2 }}>
-                + Add Emergency Contact
+                + {getTranslation(language, 'addEmergencyContact')}
               </Button>
               <Grid container spacing={2} sx={{ mb: 3 }}>
                 {emergencyContacts.map((contact) => (
@@ -659,10 +702,10 @@ const DashboardScreen = () => {
               </Grid>
 
               <Typography variant="h6" gutterBottom>
-                Report & Tracking
+                {getTranslation(language, 'reportTracking')}
               </Typography>
               <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={handleDownloadReport}>
-                Download Report
+                {getTranslation(language, 'downloadReport')}
               </Button>
               <ReportCard adherence={calculateAdherence()} />
 

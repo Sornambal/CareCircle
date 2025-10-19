@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, CircularProgress } from '@mui/material';
 import { Warning } from '@mui/icons-material';
-import { sendSOSAlert } from '../utils/api';
+import { sendSOSAlert, triggerVoiceSOS } from '../utils/api';
 
 // Capacitor imports for mobile notifications
 let LocalNotifications = null;
@@ -19,6 +19,7 @@ const SOSButton = ({ type, user }) => {
   const [countdownInterval, setCountdownInterval] = useState(null);
   const [reminderInterval, setReminderInterval] = useState(null);
   const [alertSent, setAlertSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
   // Voice alert function with multilingual support
   const playVoiceAlert = (message) => {
@@ -136,12 +137,27 @@ const SOSButton = ({ type, user }) => {
       const location = { lat: 0, lng: 0 }; // Mock location - in real app, get from GPS
       const sosType = type === 'all' ? 'emergency' : 'family';
 
+      setSending(true);
+
+      // Trigger server-side voice call via Twilio
+      try {
+  const token = localStorage.getItem('token');
+  // Do not pass caregiverPhone to let backend use authenticated user's registered phone
+  const resp = await triggerVoiceSOS({ elderlyName: user?.elderlyName || 'Unknown', alertType: sosType }, token);
+        console.log('triggerVoiceSOS response', resp.data);
+      } catch (err) {
+        console.error('triggerVoiceSOS failed', err?.response?.data || err.message);
+        throw new Error('Failed to send voice SOS');
+      }
+
+      // Also send SMS/real-time (existing function)
       await sendSOSAlert(user?._id, location, localStorage.getItem('token'), sosType);
 
-      setAlertSent(true);
+  setAlertSent(true);
+  setSending(false);
 
-      // Play success voice alert
-      playVoiceAlert("SOS alert sent successfully. Help is on the way!");
+      // Play success voice alert locally as well
+      playVoiceAlert(user?.preferredLanguage === 'Tamil' ? 'அவசரம் அனுப்பப்பட்டது. உதவி வரும்!' : 'SOS alert sent successfully. Help is on the way!');
 
       // Send mobile notification
       const alertTypeText = type === 'all' ? 'EMERGENCY SOS' : 'FAMILY SOS';
@@ -159,10 +175,16 @@ const SOSButton = ({ type, user }) => {
 
     } catch (error) {
       console.error('Error sending SOS:', error);
-      playVoiceAlert("Failed to send SOS alert. Please try again.");
-      alert('Failed to send SOS alert');
+      const backendMessage = error?.response?.data?.message || error?.message || 'Failed to send SOS alert';
+      playVoiceAlert(user?.preferredLanguage === 'Tamil' ? 'SOS அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்.' : `Failed to send SOS alert. ${backendMessage}`);
+      alert(`Failed to send SOS alert. ${backendMessage}`);
       setShowDialog(false);
       setCountdown(10);
+      setSending(false);
+    } finally {
+      // stop any countdowns
+      if (countdownInterval) clearInterval(countdownInterval);
+      if (reminderInterval) clearInterval(reminderInterval);
     }
   };
 
@@ -241,25 +263,44 @@ const SOSButton = ({ type, user }) => {
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center', p: 4 }}>
           {!alertSent ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              onClick={handleRejectSOS}
-              sx={{
-                minWidth: 250,
-                minHeight: 80,
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                backgroundColor: 'white',
-                color: 'error.main',
-                '&:hover': {
-                  backgroundColor: 'grey.100',
-                },
-              }}
-            >
-              Cancel Alert
-            </Button>
+            sending ? (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                disabled
+                sx={{
+                  minWidth: 250,
+                  minHeight: 80,
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  backgroundColor: 'white',
+                  color: 'error.main',
+                }}
+              >
+                <CircularProgress size={24} color="inherit" />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="large"
+                onClick={handleRejectSOS}
+                sx={{
+                  minWidth: 250,
+                  minHeight: 80,
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  backgroundColor: 'white',
+                  color: 'error.main',
+                  '&:hover': {
+                    backgroundColor: 'grey.100',
+                  },
+                }}
+              >
+                Cancel Alert
+              </Button>
+            )
           ) : (
             <Button
               variant="contained"

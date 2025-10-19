@@ -1,33 +1,24 @@
 import { useEffect } from 'react';
-import React, { useRef } from 'react';
-
-// Language mappings for text notifications
-const textMessages = {
-  English: (medicine) => `Time to take your medicine. ${medicine.name}, dosage ${medicine.dosage}. Please take the medicine now.`,
-  Tamil: (medicine) => `மருந்து எடுக்கும் நேரம். ${medicine.name}, அளவு ${medicine.dosage}. இப்போது மருந்தை எடுத்துக்கொள்ளுங்கள்.`,
-  Hindi: (medicine) => `दवा लेने का समय. ${medicine.name}, खुराक ${medicine.dosage}. कृपया अभी दवा लें।`,
-  Malayalam: (medicine) => `മരുന്ന് എടുക്കാനുള്ള സമയം. ${medicine.name}, അളവ് ${medicine.dosage}. ഇപ്പോൾ മരുന്ന് എടുക്കുക.`,
-};
-
-// Language codes for voice synthesis
-const voiceLangCodes = {
-  English: 'en-IN',
-  Tamil: 'ta-IN',
-  Hindi: 'hi-IN',
-  Malayalam: 'ml-IN',
-};
+import React, { useRef, useState } from 'react';
+import { getTranslation, getVoiceLangCode } from '../utils/translations';
 
 const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken) => {
   const preferredLanguage = user?.preferredLanguage || 'English';
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   // Get message in preferred language, fallback to English
   const getMessage = (medicine) => {
-    return textMessages[preferredLanguage] ? textMessages[preferredLanguage](medicine) : textMessages.English(medicine);
+    return getTranslation(preferredLanguage, 'medicineReminderMessage', medicine);
+  };
+
+  // Short voice phrase like "Take medicine" in preferred language
+  const getVoiceShortPhrase = () => {
+    return getTranslation(preferredLanguage, 'takeMedicine');
   };
 
   // Get voice lang code, fallback to English
   const getVoiceLang = () => {
-    return voiceLangCodes[preferredLanguage] || 'en-IN';
+    return getVoiceLangCode(preferredLanguage);
   };
 
   // Get appropriate voice for the language
@@ -73,7 +64,7 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
 
     // If no native voice found for the language, use English voice but keep the original message
     // This allows the English voice to attempt to speak the foreign language text
-    const englishVoice = voices.find(voice => voice.lang === 'en-IN' || voice.lang === 'en-US' || voice.lang === 'en-GB');
+    const englishVoice = voices.find(voice => voice.lang === 'en-IN' || voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en'));
     if (englishVoice) {
       console.log('Using English voice for', lang, 'message:', englishVoice.name);
       return englishVoice;
@@ -108,14 +99,27 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
       const voices = window.speechSynthesis.getVoices();
       if (voices.length > 0) {
         console.log('Voices loaded:', voices.map(v => `${v.name} (${v.lang})`));
+        setVoicesLoaded(true);
       }
     };
 
-    // Voices might not be loaded immediately
+    // Voices might not be loaded immediately; listen for change
     loadVoices();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+    const handler = () => loadVoices();
+    if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = handler;
     }
+
+    // Cleanup
+    return () => {
+      try {
+        if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged === handler) {
+          window.speechSynthesis.onvoiceschanged = null;
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
   }, []);
 
   // Track triggered notifications with reminder count
@@ -167,22 +171,18 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
       });
 
       // Get the appropriate voice
-      const voice = getVoice(getVoiceLang());
-      const voiceLang = voice ? voice.lang : 'en-IN'; // Default to English if no voice
+  const desiredLang = getVoiceLang();
+  const voice = getVoice(desiredLang);
+  // Prefer setting utterance.lang to the desired language code (e.g., ta-IN),
+  // even if the chosen voice reports a different lang. This helps browsers
+  // attempt correct pronunciation when possible.
+  const voiceLang = desiredLang || (voice ? voice.lang : 'en-IN'); // Default to English if no voice
 
-      // Choose message based on voice language
-      let message;
-      if (voiceLang.startsWith('en')) {
-        message = textMessages.English(medicine);
-      } else if (voiceLang.startsWith('ta')) {
-        message = textMessages.Tamil(medicine);
-      } else if (voiceLang.startsWith('hi')) {
-        message = textMessages.Hindi(medicine);
-      } else if (voiceLang.startsWith('ml')) {
-        message = textMessages.Malayalam(medicine);
-      } else {
-        message = textMessages[preferredLanguage] ? textMessages[preferredLanguage](medicine) : textMessages.English(medicine);
-      }
+      // Use message in preferred language, regardless of voice
+  const message = getMessage(medicine);
+  // Build concise spoken text: medicine name + short takeMedicine phrase
+  const voiceShortPhrase = getVoiceShortPhrase();
+  const spokenText = `${medicine.name}. ${voiceShortPhrase}`;
 
       console.log(`Triggering ${reminderText} for ${preferredLanguage} with message:`, message);
 
@@ -196,14 +196,14 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
 
       // Play voice reminder using SpeechSynthesis
       if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(message);
+        const utterance = new SpeechSynthesisUtterance(spokenText);
         utterance.lang = voiceLang;
-        utterance.rate = 0.8; // Slower rate for better clarity
+        utterance.rate = 0.9; // Slightly faster but clear
         utterance.pitch = 1.0; // Normal pitch
         if (voice) {
           utterance.voice = voice;
           console.log('Using voice:', voice.name, 'for language:', utterance.lang);
-          console.log('Full message being spoken:', message);
+          console.log('Spoken text:', spokenText);
         } else {
           console.log('No voice found for language:', utterance.lang);
         }
@@ -222,7 +222,9 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
   // For demo purposes, expose a function to manually trigger a notification
   const triggerDemoNotification = (medicine) => {
     const message = getMessage(medicine);
-    console.log('Demo notification for', preferredLanguage, 'with message:', message);
+    const voiceShortPhrase = getVoiceShortPhrase();
+    const spokenText = `${medicine.name}. ${voiceShortPhrase}`;
+    console.log('Demo notification for', preferredLanguage, 'with message:', message, 'spoken:', spokenText);
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(message, {
         body: `Demo notification in ${preferredLanguage}`,
@@ -230,11 +232,12 @@ const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken)
       });
     }
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.lang = getVoiceLang();
-      utterance.rate = 0.8; // Slower rate for better clarity
+      const desiredLang = getVoiceLang();
+      const voice = getVoice(desiredLang);
+      const utterance = new SpeechSynthesisUtterance(spokenText);
+      utterance.lang = desiredLang || (voice ? voice.lang : 'en-IN');
+      utterance.rate = 0.9; // Slightly faster but clear
       utterance.pitch = 1.0; // Normal pitch
-      const voice = getVoice(getVoiceLang());
       if (voice) {
         utterance.voice = voice;
         console.log('Demo using voice:', voice.name, 'for language:', utterance.lang);
