@@ -109,8 +109,10 @@ function App() {
           <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
             <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
               <Routes>
-                <Route path="/" element={<RegistrationScreen />} />
+                {/* make the root path render the login page */}
+                <Route path="/" element={<LoginScreen />} />
                 <Route path="/login" element={<LoginScreen />} />
+                <Route path="/register" element={<RegistrationScreen />} />
                 <Route path="/dashboard" element={<DashboardScreen />} />
               </Routes>
             </Suspense>
