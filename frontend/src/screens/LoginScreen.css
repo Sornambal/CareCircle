@@ -22,7 +22,7 @@ body {
   background: #fff;
   border-radius: 30px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-  margin: 125px;
+  margin: 90px;
   overflow: hidden;
 }
 
@@ -290,5 +290,225 @@ form {
 
   .toggle-panel h1 {
     font-size: 30px;
+  }
+}
+
+/* Mobile Responsive Media Queries - Replace all media queries with these */
+
+@media screen and (max-width: 650px) {
+  body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  .container {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .form-box {
+    position: absolute;
+    width: 100%;
+    height: 70%;
+    bottom: 0;
+    right: 0 !important;
+    left: 0;
+    padding: 30px 20px;
+    border-radius: 0;
+    overflow-y: auto;
+  }
+
+  .form-box form {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .form-box::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  .form-box.login {
+    visibility: visible;
+  }
+
+  .form-box.register {
+    visibility: hidden;
+  }
+
+  .container.active .form-box {
+    right: 0 !important;
+    bottom: 30%;
+  }
+
+  .container.active .form-box.login {
+    visibility: hidden;
+  }
+
+  .container.active .form-box.register {
+    visibility: visible;
+    bottom: 30%;
+  }
+
+  .toggle-box::before {
+    left: 0;
+    top: -270%;
+    width: 100%;
+    height: 300%;
+    border-radius: 20vw;
+    z-index: 2;
+  }
+
+  .container.active .toggle-box::before {
+    top: 70%;
+    left: 0;
+  }
+
+  .toggle-panel {
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    z-index: 3;
+    padding: 0 20px;
+  }
+
+  .toggle-panel.toggle-left {
+    top: 0;
+    left: 0;
+    transition: 0.6s ease-in-out;
+    transition-delay: 1.2s;
+  }
+
+  .container.active .toggle-panel.toggle-left {
+    left: 0;
+    top: -30%;
+    transition-delay: 0.6s;
+  }
+
+  .toggle-panel.toggle-right {
+    right: 0;
+    bottom: -30%;
+    transition: 0.6s ease-in-out;
+    transition-delay: 0.6s;
+  }
+
+  .container.active .toggle-panel.toggle-right {
+    bottom: 0;
+    right: 0;
+    transition-delay: 1.2s;
+  }
+
+  .toggle-panel h1 {
+    font-size: 26px;
+    line-height: 1.3;
+  }
+
+  .toggle-panel p {
+    font-size: 16px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .container h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .input-box {
+    margin: 16px 0;
+  }
+
+  .input-box input {
+    padding: 12px 45px 12px 18px;
+    font-size: 15px;
+  }
+
+  .register-link {
+    margin-top: 12px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .form-box {
+    padding: 25px 15px;
+    height: 68%;
+  }
+
+  .form-box form {
+    padding: 0 5px;
+  }
+
+  .container h1 {
+    font-size: 26px;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  .toggle-panel {
+    height: 32%;
+    padding: 0 15px;
+  }
+
+  .container.active .toggle-panel.toggle-left {
+    top: -32%;
+  }
+
+  .toggle-panel h1 {
+    font-size: 22px;
+  }
+
+  .toggle-panel p {
+    font-size: 14px;
+    margin-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .input-box {
+    margin: 14px 0;
+  }
+
+  .input-box input {
+    padding: 11px 40px 11px 16px;
+    font-size: 14px;
+  }
+
+  .input-box .input-icon {
+    right: 15px;
+    font-size: 18px;
+  }
+
+  .btn {
+    height: 44px;
+    font-size: 15px;
+  }
+
+  .toggle-panel .btn {
+    width: 130px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .register-link {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .error-message {
+    font-size: 13px;
+    padding: 8px;
   }
 }
