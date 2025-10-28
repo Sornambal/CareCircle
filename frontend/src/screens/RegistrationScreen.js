@@ -214,12 +214,12 @@ const RegistrationScreen = () => {
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
-          <Typography sx={{ mt: 3, textAlign: 'center', color: '#546E7A' }}>
-            Already have an account?{' '}
+          <Box sx={{ mt: 3, textAlign: 'center', color: '#546E7A', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+            <Typography component="span">Already have an account?</Typography>
             <Link to="/login" style={{ color: '#007C91', textDecoration: 'none', fontWeight: 'bold' }}>
               Login here
             </Link>
-          </Typography>
+          </Box>
         </CardContent>
       </Card>
     </Box>
