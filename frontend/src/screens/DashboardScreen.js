@@ -5,9 +5,10 @@ import ReportCard from '../components/ReportCard';
 import RecoveryGraph from '../components/RecoveryGraph';
 import ProfileCard from '../components/ProfileCard';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
+import usePWAInstall from '../hooks/usePWAInstall';
 import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar, IconButton } from '@mui/material';
-import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp } from '@mui/icons-material';
+import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp, GetApp } from '@mui/icons-material';
 import { getTranslation } from '../utils/translations';
 import './DashboardScreen.css';
 
@@ -36,6 +37,8 @@ const DashboardScreen = () => {
   const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [reminderDialog, setReminderDialog] = useState({ open: false, medicine: null, scheduledTime: null });
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  const { isInstallable, installPWA } = usePWAInstall();
 
   const token = localStorage.getItem('token');
   const [user, setUser] = React.useState(() => {

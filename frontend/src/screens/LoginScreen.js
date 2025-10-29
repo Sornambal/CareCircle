@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../utils/api';
 import { FaUser, FaLock, FaPhone } from 'react-icons/fa';
+import { IconButton } from '@mui/material';
+import { GetApp } from '@mui/icons-material';
+import usePWAInstall from '../hooks/usePWAInstall';
 import './LoginScreen.css';
 
 const LoginScreen = () => {
@@ -16,6 +19,8 @@ const LoginScreen = () => {
   const [autoLoading, setAutoLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const { isInstallable, installPWA } = usePWAInstall();
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
@@ -68,12 +73,28 @@ const LoginScreen = () => {
 
   return (
     <div className={`container ${isActive ? 'active' : ''}`}>
+      {/* PWA Install Button */}
+      {isInstallable && (
+        <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1000 }}>
+          <IconButton
+            title="Install CareCircle App"
+            onClick={() => {
+              console.log('Install button clicked');
+              installPWA();
+            }}
+            style={{ backgroundColor: '#4caf50', color: 'white' }}
+          >
+            <GetApp />
+          </IconButton>
+        </div>
+      )}
+
       {/* Elderly User Login Form */}
       <div className="form-box login">
         <form onSubmit={handleSubmit}>
           <h1>Hello Elderly User</h1>
           <p className="subtitle">Enter caregiver details to setup or login</p>
-          
+
           <div className="input-box">
             <input
               type="text"
