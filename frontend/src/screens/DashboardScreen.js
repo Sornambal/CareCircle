@@ -7,9 +7,9 @@ import ProfileCard from '../components/ProfileCard';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar, IconButton } from '@mui/material';
-import { Medication, AccessTime, Person, Phone, Email, LocalHospital, FamilyRestroom, Favorite, VolumeUp } from '@mui/icons-material';
-
+import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp } from '@mui/icons-material';
 import { getTranslation } from '../utils/translations';
+import './DashboardScreen.css';
 
 const DashboardScreen = () => {
   const [medicines, setMedicines] = useState([]);
@@ -48,7 +48,6 @@ const DashboardScreen = () => {
 
   const language = user?.preferredLanguage || 'English';
 
-  // Handler to change preferred language and persist it
   const handleLanguageChange = (newLang) => {
     const updatedUser = { ...(user || {}), preferredLanguage: newLang };
     setUser(updatedUser);
@@ -75,7 +74,6 @@ const DashboardScreen = () => {
       loadMedicines();
     }
 
-    // Request notification permission on load
     if ('Notification' in window) {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
@@ -112,7 +110,6 @@ const DashboardScreen = () => {
     try {
       if (token) {
         await markMedicineTaken(medicineId, { time: scheduledTime }, token);
-        // Refresh today's medicines
         const response = await getTodaysMedicines(token);
         setTodaysMedicines(response.data || []);
       }
@@ -122,13 +119,10 @@ const DashboardScreen = () => {
     }
   };
 
-  // Use the multilingual notifications hook
   const { triggerDemoNotification, testVoiceSupport } = useMultilingualNotifications(todaysMedicines, user, token, handleTakeMedicine);
 
-  // Track triggered dialogs to prevent repeats
   const triggeredDialogs = useRef(new Set());
 
-  // Check for medication reminders every minute
   useEffect(() => {
     const checkReminders = () => {
       const now = new Date();
@@ -143,9 +137,7 @@ const DashboardScreen = () => {
               if (currentHour === hour && currentMinute === minute) {
                 const dialogKey = `${medicine._id}-${scheduled.time}`;
                 if (!triggeredDialogs.current.has(dialogKey)) {
-                  // Show dialog as fallback or additional UI
                   setReminderDialog({ open: true, medicine, scheduledTime: scheduled.time });
-                  // Mark as triggered to prevent repeats
                   triggeredDialogs.current.add(dialogKey);
                 }
               }
@@ -155,20 +147,17 @@ const DashboardScreen = () => {
       });
     };
 
-    const reminderInterval = setInterval(checkReminders, 60000); // Check every minute
-    checkReminders(); // Check immediately
+    const reminderInterval = setInterval(checkReminders, 60000);
+    checkReminders();
 
     return () => clearInterval(reminderInterval);
   }, [todaysMedicines]);
 
-  // Calculate adherence percentage (mocked for demo)
   const calculateAdherence = () => {
     if (medicines.length === 0) return 0;
-    // For demo, assume 80% adherence
     return 80;
   };
 
-  // Prepare recovery data for graph (mocked for demo)
   const recoveryData = [
     { date: 'Day 1', recovery: 20 },
     { date: 'Day 3', recovery: 40 },
@@ -178,11 +167,7 @@ const DashboardScreen = () => {
     { date: 'Day 14', recovery: 100 },
   ];
 
-
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+  const handleOpenModal = () => setModalOpen(true);
 
   const handleCloseModal = () => {
     setModalOpen(false);
@@ -209,8 +194,8 @@ const DashboardScreen = () => {
     try {
       const medicineData = {
         name: newMedicine.name,
-        dosage: String(newMedicine.dosage),  // Convert dosage to string to match backend schema
-        times: newMedicine.times.split(',').map(time => time.trim()), // Split times into array
+        dosage: String(newMedicine.dosage),
+        times: newMedicine.times.split(',').map(time => time.trim()),
         prescribedDays: parseInt(newMedicine.prescribedDays, 10),
         doctorContact: newMedicine.doctorContact,
       };
@@ -220,7 +205,6 @@ const DashboardScreen = () => {
         await addMedicine(medicineData, token);
       }
       handleCloseModal();
-      // Reload medicines
       const response = await fetchMedicines(token);
       setMedicines(response.data || []);
     } catch (err) {
@@ -245,7 +229,6 @@ const DashboardScreen = () => {
       } else {
         await addEmergencyContact(newContact, token);
       }
-      // Reload contacts
       const contacts = await getEmergencyContacts(token);
       setEmergencyContacts(contacts.data || []);
       setContactModalOpen(false);
@@ -267,7 +250,6 @@ const DashboardScreen = () => {
   const isElderly = user.role === 'elderly';
   const isCaregiver = user.role === 'caregiver';
 
-  // New handlers for editing and deleting medicines
   const handleEditMedicine = (medicine) => {
     setNewMedicine({
       name: medicine.name,
@@ -281,7 +263,6 @@ const DashboardScreen = () => {
   };
 
   const handleDeleteMedicine = async (id) => {
-    console.log('Deleting medicine with id:', id);
     if (window.confirm('Are you sure you want to delete this medicine?')) {
       try {
         await deleteMedicine(id, token);
@@ -293,7 +274,6 @@ const DashboardScreen = () => {
     }
   };
 
-  // New handlers for editing and deleting emergency contacts
   const handleEditContact = (contact) => {
     setNewContact({
       name: contact.name,
@@ -306,11 +286,9 @@ const DashboardScreen = () => {
   };
 
   const handleDeleteContact = async (id) => {
-    console.log('Deleting contact with id:', id);
     if (window.confirm('Are you sure you want to delete this contact?')) {
       try {
         await deleteEmergencyContact(id, token);
-        // Reload contacts
         const contacts = await getEmergencyContacts(token);
         setEmergencyContacts(contacts.data || []);
       } catch (error) {
@@ -319,12 +297,10 @@ const DashboardScreen = () => {
     }
   };
 
-  // Load emergency contacts on mount
   useEffect(() => {
     const loadContacts = async () => {
       try {
         const contacts = await getEmergencyContacts(token);
-        console.log('Emergency contacts loaded:', contacts.data);
         setEmergencyContacts(contacts.data || []);
       } catch (error) {
         console.error('Failed to load emergency contacts', error);
@@ -335,10 +311,8 @@ const DashboardScreen = () => {
     }
   }, [token]);
 
-  // Download PDF report handler
   const handleDownloadReport = async () => {
     try {
-      // Calculate date range (last 30 days by default)
       const endDate = new Date();
       const startDate = new Date();
       startDate.setDate(endDate.getDate() - 30);
@@ -371,40 +345,29 @@ const DashboardScreen = () => {
 
   return (
     <>
-      <Box sx={{
-        minHeight: '100vh',
-        background: '#F7F9FA',
-        py: 4
-      }}>
-        <Box sx={{ maxWidth: 1200, mx: 'auto', px: 3 }}>
-
+      <Box className="dashboard-container">
+        <Box className="dashboard-content">
           {/* Header Section */}
-          <AppBar position="static" elevation={0} sx={{
-            mb: 4,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 3,
-            color: 'text.primary'
-          }}>
-            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Favorite sx={{ color: '#ff6b6b', fontSize: 32 }} />
-                <Box>
-                  <Typography variant="h5" component="div" sx={{ fontWeight: 'bold', color: '#2c3e50' }}>
+          <AppBar position="static" elevation={0} className="dashboard-header">
+            <Toolbar className="header-toolbar">
+              <Box className="header-logo">
+                <Favorite className="logo-icon" />
+                <Box className="logo-text">
+                  <Typography variant="h5" component="div" className="logo-title">
                     {getTranslation(language, 'careCircle')}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  <Typography variant="body2" className="logo-subtitle">
                     {getTranslation(language, 'yourHealthCompanion')}
                   </Typography>
                 </Box>
               </Box>
-              {/* Language selector - available to all users */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              
+              <Box className="header-controls">
                 <Select
                   value={language}
                   size="small"
                   onChange={(e) => handleLanguageChange(e.target.value)}
-                  sx={{ minWidth: 120, bgcolor: 'background.paper' }}
+                  className="language-select"
                 >
                   <MenuItem value="English">English</MenuItem>
                   <MenuItem value="Tamil">தமிழ் (Tamil)</MenuItem>
@@ -413,11 +376,10 @@ const DashboardScreen = () => {
                 </Select>
 
                 <IconButton
+                  className="voice-test-btn"
                   title="List voices & play test"
                   onClick={() => {
-                    // Show available voices in console and play a demo utterance for debugging
                     if (typeof testVoiceSupport === 'function') testVoiceSupport();
-                    // Trigger a quick demo speech for current language using a sample medicine
                     const sampleMed = { name: 'Paracetamol', dosage: '1 tablet' };
                     if (typeof triggerDemoNotification === 'function') triggerDemoNotification(sampleMed);
                   }}
@@ -427,12 +389,14 @@ const DashboardScreen = () => {
               </Box>
 
               {isElderly && (
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', mr: 1 }}>
+                <Box className="sos-section">
+                  <Typography variant="body2" className="sos-text">
                     {getTranslation(language, 'needHelpText')}
                   </Typography>
-                  <SOSButton type="all" user={user} />
-                  <SOSButton type="relatives" user={user} />
+                  <Box className="sos-buttons">
+                    <SOSButton type="all" user={user} />
+                    <SOSButton type="relatives" user={user} />
+                  </Box>
                 </Box>
               )}
             </Toolbar>
@@ -440,65 +404,41 @@ const DashboardScreen = () => {
 
           {/* Welcome Section for Elderly */}
           {isElderly && (
-            <Card sx={{
-              mb: 4,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 3,
-              border: '2px solid #e3f2fd'
-            }}>
-              <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                <Avatar sx={{
-                  width: 80,
-                  height: 80,
-                  mx: 'auto',
-                  mb: 2,
-                  bgcolor: '#4caf50',
-                  fontSize: 36
-                }}>
-                  👋
-                </Avatar>
-                <Typography variant="h4" gutterBottom sx={{ color: '#2c3e50', fontWeight: 'bold' }}>
+            <Card className="welcome-card">
+              <CardContent className="welcome-content">
+                <Avatar className="welcome-avatar">👋</Avatar>
+                <Typography variant="h4" gutterBottom className="welcome-title">
                   {getTranslation(language, 'hello')} {user?.elderlyName || getTranslation(language, 'friend')}!
                 </Typography>
-                <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
+                <Typography variant="h6" className="welcome-subtitle">
                   {getTranslation(language, 'howFeeling')}
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
-                  <Chip label={getTranslation(language, 'great')} variant="outlined" sx={{ borderRadius: 2 }} />
-                  <Chip label={getTranslation(language, 'okay')} variant="outlined" sx={{ borderRadius: 2 }} />
-                  <Chip label={getTranslation(language, 'needHelp')} variant="outlined" sx={{ borderRadius: 2 }} />
+                <Box className="feeling-chips">
+                  <Chip label={getTranslation(language, 'great')} variant="outlined" className="feeling-chip" />
+                  <Chip label={getTranslation(language, 'okay')} variant="outlined" className="feeling-chip" />
+                  <Chip label={getTranslation(language, 'needHelp')} variant="outlined" className="feeling-chip" />
                 </Box>
               </CardContent>
             </Card>
           )}
 
-          {/* Caregiver Profile */}
           {isCaregiver && <ProfileCard user={user} />}
 
           {/* Caregiver Quick Actions */}
           {isCaregiver && (
-            <Card sx={{
-              mb: 4,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 3
-            }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Person sx={{ color: '#2196f3' }} />
+            <Card className="quick-actions-card">
+              <CardContent className="quick-actions-content">
+                <Typography variant="h6" gutterBottom className="quick-actions-title">
+                  <Person className="section-icon" />
                   {getTranslation(language, 'quickActions')}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Box className="quick-actions-buttons">
                   <Button
                     variant="contained"
                     startIcon={<Medication />}
                     onClick={handleOpenModal}
-                    sx={{
-                      borderRadius: 2,
-                      background: 'linear-gradient(45deg, #4CAF50 30%, #66BB6A 90%)',
-                      boxShadow: '0 3px 5px 2px rgba(76, 175, 80, .3)',
-                    }}
+                    className="add-medicine-btn"
+                    fullWidth
                   >
                     {getTranslation(language, 'addMedicine')}
                   </Button>
@@ -506,7 +446,8 @@ const DashboardScreen = () => {
                     variant="outlined"
                     startIcon={<LocalHospital />}
                     onClick={() => setContactModalOpen(true)}
-                    sx={{ borderRadius: 2 }}
+                    className="add-contact-btn"
+                    fullWidth
                   >
                     {getTranslation(language, 'addEmergencyContact')}
                   </Button>
@@ -517,97 +458,66 @@ const DashboardScreen = () => {
 
           {/* Loading and Error States */}
           {loading && (
-            <Card sx={{
-              mb: 4,
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              borderRadius: 3,
-              textAlign: 'center',
-              py: 4
-            }}>
-              <CircularProgress sx={{ mb: 2 }} />
-              <Typography>{getTranslation(language, 'loadingHealth')}</Typography>
+            <Card className="loading-card">
+              <CircularProgress className="loading-spinner" />
+              <Typography className="loading-text">
+                {getTranslation(language, 'loadingHealth')}
+              </Typography>
             </Card>
           )}
           {error && (
-            <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }}>
+            <Alert severity="error" className="error-alert">
               {error}
             </Alert>
           )}
 
           {/* Current Time Display */}
-          <Card sx={{
-            mb: 4,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 3,
-            textAlign: 'center'
-          }}>
-            <CardContent sx={{ py: 3 }}>
-              <AccessTime sx={{ fontSize: 48, color: '#ff9800', mb: 1 }} />
-              <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#2c3e50', mb: 1 }}>
+          <Card className="time-card">
+            <CardContent className="time-content">
+              <AccessTime className="time-icon" />
+              <Typography variant="h3" className="time-display">
                 {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </Typography>
-              <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+              <Typography variant="h6" className="date-display">
                 {currentTime.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </Typography>
             </CardContent>
           </Card>
 
           {/* Today's Medications Section */}
-          <Card sx={{
-            mb: 4,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 3
-          }}>
-            <CardContent>
-              <Typography variant="h5" gutterBottom sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                color: '#2c3e50',
-                fontWeight: 'bold'
-              }}>
-                <Medication sx={{ color: '#4caf50' }} />
+          <Card className="medications-card">
+            <CardContent className="medications-content">
+              <Typography variant="h5" gutterBottom className="medications-title">
+                <Medication className="section-icon" />
                 {getTranslation(language, 'todaysMedications')}
               </Typography>
 
               {todaysMedicines.length > 0 ? (
-                <Grid container spacing={3}>
+                <Grid container spacing={{ xs: 2, sm: 3 }}>
                   {todaysMedicines.map((med) => (
                     <Grid item xs={12} sm={6} md={4} key={med._id}>
-                      <Card variant="outlined" sx={{
-                        borderRadius: 2,
-                        border: '2px solid #e8f5e8',
-                        background: 'linear-gradient(135deg, #f1f8e9 0%, #ffffff 100%)'
-                      }}>
-                        <CardContent>
+                      <Card variant="outlined" className="medicine-item-card">
+                        <CardContent className="medicine-item-content">
                           <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
-                          <Box sx={{ mt: 2, display: 'flex', gap: 1, flexDirection: 'column' }}>
+                          <Box className="medicine-actions">
                             {isElderly && (
                               <Button
                                 variant="contained"
                                 color="success"
                                 size="large"
                                 onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
-                                sx={{
-                                  borderRadius: 2,
-                                  fontSize: '1.1rem',
-                                  fontWeight: 'bold',
-                                  py: 1.5
-                                }}
+                                className="taken-btn"
                               >
                                 ✅ {getTranslation(language, 'takenIt')}
                               </Button>
                             )}
                             {isCaregiver && (
-                              <Box sx={{ display: 'flex', gap: 1 }}>
+                              <Box className="medicine-edit-actions">
                                 <Button
                                   variant="outlined"
                                   size="small"
                                   onClick={() => handleEditMedicine(med)}
-                                  sx={{ borderRadius: 2, flex: 1 }}
+                                  className="edit-btn"
                                 >
                                   Edit
                                 </Button>
@@ -616,7 +526,7 @@ const DashboardScreen = () => {
                                   size="small"
                                   color="error"
                                   onClick={() => handleDeleteMedicine(med._id)}
-                                  sx={{ borderRadius: 2, flex: 1 }}
+                                  className="delete-btn"
                                 >
                                   Delete
                                 </Button>
@@ -629,11 +539,11 @@ const DashboardScreen = () => {
                   ))}
                 </Grid>
               ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
+                <Box className="no-medications">
+                  <Typography variant="h6" className="no-medications-title">
                     🎉 {getTranslation(language, 'noMedications')}
                   </Typography>
-                  <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                  <Typography variant="body1" className="no-medications-text">
                     {getTranslation(language, 'enjoyDay')}
                   </Typography>
                 </Box>
@@ -642,134 +552,173 @@ const DashboardScreen = () => {
           </Card>
 
           {/* Medication Reminder Dialog */}
-          <Dialog open={reminderDialog.open} onClose={() => setReminderDialog({ open: false, medicine: null, scheduledTime: null })}>
-            <DialogTitle>{getTranslation(language, 'medicationReminder')}</DialogTitle>
+          <Dialog 
+            open={reminderDialog.open} 
+            onClose={() => setReminderDialog({ open: false, medicine: null, scheduledTime: null })}
+            fullWidth
+            maxWidth="sm"
+            className="reminder-dialog"
+          >
+            <DialogTitle className="reminder-dialog-title">
+              {getTranslation(language, 'medicationReminder')}
+            </DialogTitle>
             <DialogContent>
-              <Typography variant="h6">
+              <Typography variant="h6" className="reminder-medicine-name">
                 {getTranslation(language, 'timeToTake')} {reminderDialog.medicine?.name}
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="body1" className="reminder-dosage">
                 {getTranslation(language, 'dosage')} {reminderDialog.medicine?.dosage}
               </Typography>
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="body2" color="textSecondary" className="reminder-time">
                 {getTranslation(language, 'scheduledTime')} {reminderDialog.scheduledTime}
               </Typography>
               <Button
                 onClick={() => triggerDemoNotification(reminderDialog.medicine)}
                 variant="outlined"
                 color="secondary"
-                sx={{ mt: 2 }}
+                fullWidth
+                className="test-notification-btn"
               >
                 {getTranslation(language, 'testNotification')} ({user?.preferredLanguage || 'English'})
               </Button>
             </DialogContent>
-            <DialogActions>
+            <DialogActions className="reminder-actions">
               <Button
                 onClick={() => handleTakeMedicine(reminderDialog.medicine?._id, reminderDialog.scheduledTime)}
                 variant="contained"
                 color="primary"
                 size="large"
-                sx={{ fontSize: '1.2rem', padding: '12px 24px' }}
+                fullWidth
+                className="reminder-taken-btn"
               >
                 {getTranslation(language, 'takenIt')}
               </Button>
             </DialogActions>
           </Dialog>
 
+          {/* Caregiver Sections */}
           {isCaregiver && (
             <>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="section-heading">
                 {getTranslation(language, 'emergencyContacts')}
               </Typography>
-              <Button variant="contained" color="secondary" onClick={() => setContactModalOpen(true)} sx={{ mb: 2 }}>
+              <Button 
+                variant="contained" 
+                color="secondary" 
+                onClick={() => setContactModalOpen(true)} 
+                fullWidth
+                className="add-contact-main-btn"
+              >
                 + {getTranslation(language, 'addEmergencyContact')}
               </Button>
-              <Grid container spacing={2} sx={{ mb: 3 }}>
+              <Grid container spacing={{ xs: 2, sm: 2 }} className="contacts-grid">
                 {emergencyContacts.map((contact) => (
                   <Grid item xs={12} sm={6} md={4} key={contact._id}>
-                    <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
-                      <Typography variant="h6">{contact.name}</Typography>
-                      <Typography>Phone: {contact.phone}</Typography>
-                      <Typography>Email: {contact.email}</Typography>
-                      <Typography>Role: {contact.role}</Typography>
-                      <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
-                        <Button variant="outlined" size="small" onClick={() => handleEditContact(contact)}>Edit</Button>
-                        <Button variant="outlined" size="small" color="error" onClick={() => handleDeleteContact(contact._id)}>Delete</Button>
+                    <Box className="contact-card">
+                      <Typography variant="h6" className="contact-name">
+                        {contact.name}
+                      </Typography>
+                      <Typography className="contact-info">Phone: {contact.phone}</Typography>
+                      <Typography className="contact-info">Email: {contact.email}</Typography>
+                      <Typography className="contact-info">Role: {contact.role}</Typography>
+                      <Box className="contact-actions">
+                        <Button 
+                          variant="outlined" 
+                          size="small" 
+                          onClick={() => handleEditContact(contact)}
+                          fullWidth
+                          className="contact-edit-btn"
+                        >
+                          Edit
+                        </Button>
+                        <Button 
+                          variant="outlined" 
+                          size="small" 
+                          color="error" 
+                          onClick={() => handleDeleteContact(contact._id)}
+                          fullWidth
+                          className="contact-delete-btn"
+                        >
+                          Delete
+                        </Button>
                       </Box>
                     </Box>
                   </Grid>
                 ))}
               </Grid>
 
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="section-heading">
                 {getTranslation(language, 'reportTracking')}
               </Typography>
-              <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={handleDownloadReport}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleDownloadReport}
+                fullWidth
+                className="download-report-btn"
+              >
                 {getTranslation(language, 'downloadReport')}
               </Button>
               <ReportCard adherence={calculateAdherence()} />
 
               {/* Medicine Taken Report Table */}
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '16px' }}>
-                <thead>
-                  <tr>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Medicine Name</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Before/After Food</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Taken Today</th>
-                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {medicines.map((med) => {
-                    // Determine if medicine taken today
-                    const today = new Date().toISOString().slice(0, 10);
-                    const takenToday = med.taken.some(t => t.date && t.date.slice(0, 10) === today);
-                    const beforeAfterFood = med.time && med.time.includes('Before Food') ? 'Before Food' : med.time && med.time.includes('After Food') ? 'After Food' : '';
+              <Box className="report-table-container">
+                <table className="report-table">
+                  <thead>
+                    <tr>
+                      <th>Medicine Name</th>
+                      <th>Before/After Food</th>
+                      <th>Taken Today</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {medicines.map((med) => {
+                      const today = new Date().toISOString().slice(0, 10);
+                      const takenToday = med.taken.some(t => t.date && t.date.slice(0, 10) === today);
+                      const beforeAfterFood = med.time && med.time.includes('Before Food') ? 'Before Food' : med.time && med.time.includes('After Food') ? 'After Food' : '';
 
-                    return (
-                      <tr key={med._id}>
-                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{med.name}</td>
-                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{beforeAfterFood}</td>
-                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>{takenToday ? 'Yes' : 'No'}</td>
-                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                          <Button variant="outlined" size="small" onClick={() => handleEditMedicine(med)}>Edit</Button>
-                          <Button variant="outlined" size="small" color="error" onClick={() => handleDeleteMedicine(med._id)}>Delete</Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr key={med._id}>
+                          <td>{med.name}</td>
+                          <td>{beforeAfterFood}</td>
+                          <td>{takenToday ? 'Yes' : 'No'}</td>
+                          <td className="table-actions">
+                            <Button 
+                              variant="outlined" 
+                              size="small" 
+                              onClick={() => handleEditMedicine(med)}
+                              className="table-edit-btn"
+                            >
+                              Edit
+                            </Button>
+                            <Button 
+                              variant="outlined" 
+                              size="small" 
+                              color="error" 
+                              onClick={() => handleDeleteMedicine(med._id)}
+                              className="table-delete-btn"
+                            >
+                              Delete
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </Box>
 
               <RecoveryGraph data={recoveryData} />
-
-              {/* TODO: Add Daily Medicine Tracker with toggle for Taken/Missed */}
-
-              {/* TODO: Add Notifications Section */}
-
-              {/* TODO: Add Companionship Chatbot Section */}
-
-              {/* TODO: Add Helper / Family Connectivity Section */}
-
-              {/* TODO: Add Footer Navigation */}
             </>
           )}
 
+          {/* Modals */}
           {isCaregiver && (
             <>
               <Modal open={modalOpen} onClose={handleCloseModal}>
-                <Box sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: 400,
-                  bgcolor: 'background.paper',
-                  boxShadow: 24,
-                  p: 4,
-                  borderRadius: 2,
-                }}>
-                  <Typography variant="h6" gutterBottom>
+                <Box className="modal-box">
+                  <Typography variant="h6" gutterBottom className="modal-title">
                     {editingMedicineId ? 'Edit Medicine' : 'Add Medicine'}
                   </Typography>
                   <TextField
@@ -779,6 +728,7 @@ const DashboardScreen = () => {
                     onChange={handleInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
                   <TextField
                     label="Dosage"
@@ -787,6 +737,7 @@ const DashboardScreen = () => {
                     onChange={handleInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
                   <TextField
                     label="Times (comma-separated, e.g., 08:00, 14:00, 20:00)"
@@ -796,6 +747,7 @@ const DashboardScreen = () => {
                     fullWidth
                     margin="normal"
                     placeholder="08:00, 14:00, 20:00"
+                    size="small"
                   />
                   <TextField
                     label="Prescribed Days"
@@ -805,6 +757,7 @@ const DashboardScreen = () => {
                     onChange={handleInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
                   <TextField
                     label="Doctor Contact"
@@ -813,12 +766,24 @@ const DashboardScreen = () => {
                     onChange={handleInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
-                  <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                    <Button variant="contained" color="primary" onClick={handleSaveMedicine}>
+                  <Box className="modal-actions">
+                    <Button 
+                      variant="contained" 
+                      color="primary" 
+                      onClick={handleSaveMedicine}
+                      fullWidth
+                      className="modal-save-btn"
+                    >
                       Save
                     </Button>
-                    <Button variant="outlined" onClick={handleCloseModal}>
+                    <Button 
+                      variant="outlined" 
+                      onClick={handleCloseModal}
+                      fullWidth
+                      className="modal-cancel-btn"
+                    >
                       Cancel
                     </Button>
                   </Box>
@@ -826,18 +791,8 @@ const DashboardScreen = () => {
               </Modal>
 
               <Modal open={contactModalOpen} onClose={handleCloseContactModal}>
-                <Box sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: 400,
-                  bgcolor: 'background.paper',
-                  boxShadow: 24,
-                  p: 4,
-                  borderRadius: 2,
-                }}>
-                  <Typography variant="h6" gutterBottom>
+                <Box className="modal-box">
+                  <Typography variant="h6" gutterBottom className="modal-title">
                     {editingContactId ? 'Edit Emergency Contact' : 'Add Emergency Contact'}
                   </Typography>
                   <TextField
@@ -847,6 +802,7 @@ const DashboardScreen = () => {
                     onChange={handleContactInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
                   <TextField
                     label="Phone"
@@ -855,6 +811,7 @@ const DashboardScreen = () => {
                     onChange={handleContactInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
                   <TextField
                     label="Email"
@@ -863,8 +820,9 @@ const DashboardScreen = () => {
                     onChange={handleContactInputChange}
                     fullWidth
                     margin="normal"
+                    size="small"
                   />
-                  <FormControl fullWidth margin="normal">
+                  <FormControl fullWidth margin="normal" size="small">
                     <InputLabel id="role-label">Role</InputLabel>
                     <Select
                       labelId="role-label"
@@ -878,11 +836,22 @@ const DashboardScreen = () => {
                       <MenuItem value="Relative">Relative</MenuItem>
                     </Select>
                   </FormControl>
-                  <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                    <Button variant="contained" color="secondary" onClick={handleSaveContact}>
+                  <Box className="modal-actions">
+                    <Button 
+                      variant="contained" 
+                      color="secondary" 
+                      onClick={handleSaveContact}
+                      fullWidth
+                      className="modal-save-btn"
+                    >
                       Save
                     </Button>
-                    <Button variant="outlined" onClick={handleCloseContactModal}>
+                    <Button 
+                      variant="outlined" 
+                      onClick={handleCloseContactModal}
+                      fullWidth
+                      className="modal-cancel-btn"
+                    >
                       Cancel
                     </Button>
                   </Box>
@@ -897,4 +866,3 @@ const DashboardScreen = () => {
 };
 
 export default DashboardScreen;
-
