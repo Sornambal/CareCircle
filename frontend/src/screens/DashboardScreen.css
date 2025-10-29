@@ -1,0 +1,786 @@
+/* ===== Dashboard Container ===== */
+.dashboard-container {
+  min-height: 100vh;
+  background: #F7F9FA;
+  padding: 16px 0;
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ===== Header Styles ===== */
+.dashboard-header {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  color: #000 !important;
+}
+
+.header-toolbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.logo-icon {
+  color: #ff6b6b !important;
+  font-size: 28px !important;
+}
+
+.logo-text {
+  text-align: center;
+}
+
+.logo-title {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  font-size: 1.25rem !important;
+}
+
+.logo-subtitle {
+  color: rgba(0, 0, 0, 0.6) !important;
+  font-size: 0.75rem !important;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.language-select {
+  width: 100%;
+  background-color: #fff;
+  font-size: 0.875rem !important;
+}
+
+.voice-test-btn {
+  display: none !important;
+}
+
+.sos-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sos-text {
+  color: rgba(0, 0, 0, 0.6) !important;
+  display: none;
+}
+
+.sos-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+/* ===== Welcome Card ===== */
+.welcome-card {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 2px solid #e3f2fd !important;
+}
+
+.welcome-content {
+  text-align: center;
+  padding: 24px 16px !important;
+}
+
+.welcome-avatar {
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0 auto 16px !important;
+  background-color: #4caf50 !important;
+  font-size: 28px !important;
+}
+
+.welcome-title {
+  color: #2c3e50 !important;
+  font-weight: bold !important;
+  font-size: 1.5rem !important;
+}
+
+.welcome-subtitle {
+  color: rgba(0, 0, 0, 0.6) !important;
+  margin-bottom: 16px !important;
+  font-size: 1rem !important;
+}
+
+.feeling-chips {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 8px;
+}
+
+.feeling-chip {
+  border-radius: 16px !important;
+  font-size: 0.75rem !important;
+}
+
+/* ===== Quick Actions Card ===== */
+.quick-actions-card {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.quick-actions-content {
+  padding: 16px !important;
+}
+
+.quick-actions-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem !important;
+  margin-bottom: 16px !important;
+}
+
+.section-icon {
+  color: #2196f3 !important;
+}
+
+.quick-actions-buttons {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.add-medicine-btn {
+  border-radius: 16px !important;
+  background: linear-gradient(45deg, #4CAF50 30%, #66BB6A 90%) !important;
+  box-shadow: 0 3px 5px 2px rgba(76, 175, 80, .3) !important;
+  padding: 12px 16px !important;
+  font-size: 0.875rem !important;
+}
+
+.add-contact-btn {
+  border-radius: 16px !important;
+  padding: 12px 16px !important;
+  font-size: 0.875rem !important;
+}
+
+/* ===== Loading and Error States ===== */
+.loading-card {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  text-align: center;
+  padding: 24px !important;
+}
+
+.loading-spinner {
+  margin-bottom: 16px !important;
+}
+
+.loading-text {
+  font-size: 0.875rem !important;
+}
+
+.error-alert {
+  margin-bottom: 16px;
+  border-radius: 16px !important;
+  font-size: 0.875rem !important;
+}
+
+/* ===== Time Card ===== */
+.time-card {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.time-content {
+  padding: 16px !important;
+}
+
+.time-icon {
+  font-size: 36px !important;
+  color: #ff9800 !important;
+  margin-bottom: 8px !important;
+}
+
+.time-display {
+  font-weight: bold !important;
+  color: #2c3e50 !important;
+  margin-bottom: 8px !important;
+  font-size: 1.75rem !important;
+}
+
+.date-display {
+  color: rgba(0, 0, 0, 0.6) !important;
+  font-size: 0.875rem !important;
+}
+
+/* ===== Medications Card ===== */
+.medications-card {
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.medications-content {
+  padding: 16px !important;
+}
+
+.medications-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2c3e50 !important;
+  font-weight: bold !important;
+  font-size: 1.125rem !important;
+  margin-bottom: 16px !important;
+}
+
+.medicine-item-card {
+  border-radius: 16px !important;
+  border: 2px solid #e8f5e8 !important;
+  background: linear-gradient(135deg, #f1f8e9 0%, #ffffff 100%) !important;
+}
+
+.medicine-item-content {
+  padding: 16px !important;
+}
+
+.medicine-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.taken-btn {
+  border-radius: 16px !important;
+  font-size: 1rem !important;
+  font-weight: bold !important;
+  padding: 10px 16px !important;
+}
+
+.medicine-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+  border-radius: 16px !important;
+  flex: 1;
+  font-size: 0.75rem !important;
+}
+
+.no-medications {
+  text-align: center;
+  padding: 24px;
+}
+
+.no-medications-title {
+  color: rgba(0, 0, 0, 0.6) !important;
+  margin-bottom: 16px !important;
+  font-size: 1rem !important;
+}
+
+.no-medications-text {
+  color: rgba(0, 0, 0, 0.6) !important;
+  font-size: 0.875rem !important;
+}
+
+/* ===== Reminder Dialog ===== */
+.reminder-dialog .MuiDialog-paper {
+  margin: 16px;
+  max-width: calc(100% - 32px);
+}
+
+.reminder-dialog-title {
+  font-size: 1.125rem !important;
+}
+
+.reminder-medicine-name {
+  font-size: 1rem !important;
+}
+
+.reminder-dosage {
+  font-size: 0.875rem !important;
+}
+
+.reminder-time {
+  font-size: 0.75rem !important;
+}
+
+.test-notification-btn {
+  margin-top: 16px !important;
+  font-size: 0.875rem !important;
+}
+
+.reminder-actions {
+  padding: 16px !important;
+}
+
+.reminder-taken-btn {
+  font-size: 1rem !important;
+  padding: 10px 20px !important;
+}
+
+/* ===== Caregiver Sections ===== */
+.section-heading {
+  font-size: 1rem !important;
+  padding: 0;
+  margin-bottom: 16px !important;
+}
+
+.add-contact-main-btn {
+  margin-bottom: 16px;
+  font-size: 0.875rem !important;
+}
+
+.contacts-grid {
+  margin-bottom: 24px;
+}
+
+.contact-card {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+}
+
+.contact-name {
+  font-size: 1rem !important;
+  margin-bottom: 8px !important;
+}
+
+.contact-info {
+  font-size: 0.875rem !important;
+  margin-bottom: 4px;
+}
+
+.contact-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.contact-edit-btn,
+.contact-delete-btn {
+  font-size: 0.75rem !important;
+}
+
+.download-report-btn {
+  margin-bottom: 16px;
+  font-size: 0.875rem !important;
+}
+
+/* ===== Report Table ===== */
+.report-table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  min-width: 600px;
+}
+
+.report-table th,
+.report-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 0.875rem;
+}
+
+.table-actions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.table-edit-btn,
+.table-delete-btn {
+  font-size: 0.75rem !important;
+}
+
+/* ===== Modal Styles ===== */
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  background-color: #fff;
+  box-shadow: 24px;
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.modal-title {
+  font-size: 1.125rem !important;
+  margin-bottom: 16px !important;
+}
+
+.modal-actions {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.modal-save-btn {
+  margin-bottom: 8px;
+  font-size: 0.875rem !important;
+}
+
+.modal-cancel-btn {
+  font-size: 0.875rem !important;
+}
+
+/* ===== Tablet Styles (min-width: 600px) ===== */
+@media (min-width: 600px) {
+  .dashboard-container {
+    padding: 24px 0;
+  }
+
+  .dashboard-content {
+    padding: 0 24px;
+  }
+
+  .dashboard-header {
+    margin-bottom: 24px;
+    border-radius: 24px;
+  }
+
+  .header-toolbar {
+    flex-direction: row;
+    padding: 8px 16px;
+    gap: 0;
+  }
+
+  .header-logo {
+    width: auto;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .logo-icon {
+    font-size: 32px !important;
+  }
+
+  .logo-text {
+    text-align: left;
+  }
+
+  .logo-title {
+    font-size: 1.5rem !important;
+  }
+
+  .logo-subtitle {
+    font-size: 0.875rem !important;
+  }
+
+  .header-controls {
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .language-select {
+    min-width: 120px;
+    width: auto;
+    font-size: 1rem !important;
+  }
+
+  .voice-test-btn {
+    display: inline-flex !important;
+  }
+
+  .sos-section {
+    flex-direction: row;
+    width: auto;
+  }
+
+  .sos-buttons {
+    width: auto;
+  }
+
+  .welcome-card,
+  .quick-actions-card,
+  .loading-card,
+  .time-card,
+  .medications-card {
+    margin-bottom: 24px;
+  }
+
+  .welcome-content {
+    padding: 32px 24px !important;
+  }
+
+  .welcome-avatar {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 36px !important;
+  }
+
+  .welcome-title {
+    font-size: 2rem !important;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.25rem !important;
+  }
+
+  .feeling-chips {
+    padding: 0;
+  }
+
+  .feeling-chip {
+    font-size: 0.875rem !important;
+  }
+
+  .quick-actions-content {
+    padding: 24px !important;
+  }
+
+  .quick-actions-title {
+    font-size: 1.25rem !important;
+  }
+
+  .quick-actions-buttons {
+    flex-direction: row;
+  }
+
+  .add-medicine-btn,
+  .add-contact-btn {
+    padding: 8px 16px !important;
+    font-size: 1rem !important;
+    max-width: fit-content;
+  }
+
+  .loading-card {
+    padding: 32px !important;
+  }
+
+  .loading-text {
+    font-size: 1rem !important;
+  }
+
+  .error-alert {
+    font-size: 1rem !important;
+  }
+
+  .time-content {
+    padding: 24px !important;
+  }
+
+  .time-icon {
+    font-size: 48px !important;
+  }
+
+  .time-display {
+    font-size: 2.5rem !important;
+  }
+
+  .date-display {
+    font-size: 1rem !important;
+  }
+
+  .medications-content {
+    padding: 24px !important;
+  }
+
+  .medications-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 24px !important;
+  }
+
+  .medicine-item-content {
+    padding: 16px !important;
+  }
+
+  .taken-btn {
+    font-size: 1.1rem !important;
+    padding: 12px 16px !important;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    font-size: 0.875rem !important;
+  }
+
+  .no-medications {
+    padding: 32px;
+  }
+
+  .no-medications-title {
+    font-size: 1.25rem !important;
+  }
+
+  .no-medications-text {
+    font-size: 1rem !important;
+  }
+
+  .reminder-dialog .MuiDialog-paper {
+    margin: 24px;
+    max-width: 600px;
+  }
+
+  .reminder-dialog-title {
+    font-size: 1.5rem !important;
+  }
+
+  .reminder-medicine-name {
+    font-size: 1.25rem !important;
+  }
+
+  .reminder-dosage {
+    font-size: 1rem !important;
+  }
+
+  .reminder-time {
+    font-size: 0.875rem !important;
+  }
+
+  .test-notification-btn {
+    font-size: 1rem !important;
+  }
+
+  .reminder-actions {
+    padding: 24px !important;
+  }
+
+  .reminder-taken-btn {
+    font-size: 1.2rem !important;
+    padding: 12px 24px !important;
+  }
+
+  .section-heading {
+    font-size: 1.25rem !important;
+  }
+
+  .add-contact-main-btn {
+    max-width: fit-content;
+    font-size: 1rem !important;
+  }
+
+  .contact-card {
+    padding: 16px;
+  }
+
+  .contact-name {
+    font-size: 1.25rem !important;
+  }
+
+  .contact-info {
+    font-size: 1rem !important;
+  }
+
+  .contact-actions {
+    flex-direction: row;
+  }
+
+  .contact-edit-btn,
+  .contact-delete-btn {
+    font-size: 0.875rem !important;
+  }
+
+  .download-report-btn {
+    max-width: fit-content;
+    font-size: 1rem !important;
+  }
+
+  .modal-box {
+    width: 400px;
+    max-height: auto;
+    padding: 32px;
+  }
+
+  .modal-title {
+    font-size: 1.5rem !important;
+  }
+
+  .modal-actions {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .modal-save-btn {
+    margin-bottom: 0;
+    font-size: 1rem !important;
+  }
+
+  .modal-cancel-btn {
+    font-size: 1rem !important;
+  }
+}
+
+/* ===== Desktop Styles (min-width: 960px) ===== */
+@media (min-width: 960px) {
+  .dashboard-container {
+    padding: 32px 0;
+  }
+
+  .dashboard-header {
+    margin-bottom: 32px;
+  }
+
+  .sos-text {
+    display: block;
+  }
+
+  .welcome-card,
+  .quick-actions-card,
+  .loading-card,
+  .time-card,
+  .medications-card {
+    margin-bottom: 32px;
+    border-radius: 24px;
+  }
+
+  .welcome-title {
+    font-size: 2.125rem !important;
+  }
+
+  .time-display {
+    font-size: 3rem !important;
+  }
+
+  .date-display {
+    font-size: 1.25rem !important;
+  }
+
+  .no-medications {
+    padding: 32px;
+  }
+}
