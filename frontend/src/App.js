@@ -6,7 +6,8 @@ import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui
 
 import RegistrationScreen from './screens/RegistrationScreen';
 import LoginScreen from './screens/LoginScreen';
-import DashboardScreen from './screens/DashboardScreen';
+import ElderlyDashboard from './screens/ElderlyDashboard';
+import CaregiverDashboard from './screens/CaregiverDashboard';
 import SOSNotification from './components/SOSNotification';
 import useSocket from './hooks/useSocket';
 
@@ -113,7 +114,7 @@ function App() {
                 <Route path="/" element={<LoginScreen />} />
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<RegistrationScreen />} />
-                <Route path="/dashboard" element={<DashboardScreen />} />
+                <Route path="/dashboard" element={user.role === 'elderly' ? <ElderlyDashboard /> : <CaregiverDashboard />} />
               </Routes>
             </Suspense>
           </Box>
