@@ -9,7 +9,7 @@ import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, upd
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, IconButton } from '@mui/material';
 import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp, GetApp } from '@mui/icons-material';
 import { getTranslation } from '../utils/translations';
-import './DashboardScreen.css';
+import './CaregiverDashboard.css';
 
 const CaregiverDashboard = () => {
   const [medicines, setMedicines] = useState([]);
