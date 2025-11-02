@@ -129,19 +129,7 @@ const ElderlyDashboard = () => {
                 </Box>
               </Box>
 
-              <Box className="header-controls">
-                <Select
-                  value={language}
-                  size="small"
-                  onChange={(e) => handleLanguageChange(e.target.value)}
-                  className="language-select"
-                >
-                  <MenuItem value="English">English</MenuItem>
-                  <MenuItem value="Tamil">தமிழ் (Tamil)</MenuItem>
-                  <MenuItem value="Hindi">हिन्दी (Hindi)</MenuItem>
-                  <MenuItem value="Malayalam">മലയാളം (Malayalam)</MenuItem>
-                </Select>
-              </Box>
+
 
               <Box className="sos-section">
                 <Typography variant="body2" className="sos-text">
