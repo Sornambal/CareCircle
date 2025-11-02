@@ -81,22 +81,7 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           CareCircle
         </Typography>
-        {user.role === 'caregiver' && (
-          <Button 
-            color="inherit" 
-            onClick={() => navigate('/caregiver-dashboard')}
-          >
-            Dashboard
-          </Button>
-        )}
-        {user.role === 'elderly' && (
-          <Button 
-            color="inherit" 
-            onClick={() => navigate('/elderly-dashboard')}
-          >
-            Dashboard
-          </Button>
-        )}
+
         <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>
