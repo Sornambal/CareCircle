@@ -6,7 +6,7 @@ import usePWAInstall from '../hooks/usePWAInstall';
 import { getTodaysMedicines, markMedicineTaken } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar, IconButton, AppBar, Toolbar, Select, MenuItem } from '@mui/material';
 import { Medication, AccessTime, Favorite, VolumeUp } from '@mui/icons-material';
-import { getTranslation } from '../utils/translations';
+import { t, setLanguage } from '../utils/i18n';
 import './DashboardScreen.css';
 
 const ElderlyDashboard = () => {
@@ -38,6 +38,10 @@ const ElderlyDashboard = () => {
       console.warn('Failed to persist user language preference', e);
     }
   };
+
+  useEffect(() => {
+    setLanguage(language); // Set language for polyglot
+  }, [language]);
 
   useEffect(() => {
     const fetchTodaysMedicines = async () => {
@@ -121,10 +125,10 @@ const ElderlyDashboard = () => {
                 <Favorite className="logo-icon" />
                 <Box className="logo-text">
                   <Typography variant="h5" component="div" className="logo-title">
-                    {getTranslation(language, 'careCircle')}
+                    {t('careCircle')}
                   </Typography>
                   <Typography variant="body2" className="logo-subtitle">
-                    {getTranslation(language, 'yourHealthCompanion')}
+                    {t('yourHealthCompanion')}
                   </Typography>
                 </Box>
               </Box>
@@ -133,7 +137,7 @@ const ElderlyDashboard = () => {
 
               <Box className="sos-section">
                 <Typography variant="body2" className="sos-text">
-                  {getTranslation(language, 'needHelpText')}
+                  {t('needHelpText')}
                 </Typography>
                 <Box className="sos-buttons">
                   <SOSButton type="all" user={user} />
@@ -148,15 +152,15 @@ const ElderlyDashboard = () => {
             <CardContent className="welcome-content">
               <Avatar className="welcome-avatar">👋</Avatar>
               <Typography variant="h4" gutterBottom className="welcome-title">
-                {getTranslation(language, 'hello')} {user?.elderlyName || getTranslation(language, 'friend')}!
+                {t('hello')} {user?.elderlyName || t('friend')}!
               </Typography>
               <Typography variant="h6" className="welcome-subtitle">
-                {getTranslation(language, 'howFeeling')}
+                {t('howFeeling')}
               </Typography>
               <Box className="feeling-chips">
-                <Chip label={getTranslation(language, 'great')} variant="outlined" className="feeling-chip" />
-                <Chip label={getTranslation(language, 'okay')} variant="outlined" className="feeling-chip" />
-                <Chip label={getTranslation(language, 'needHelp')} variant="outlined" className="feeling-chip" />
+                <Chip label={t('great')} variant="outlined" className="feeling-chip" />
+                <Chip label={t('okay')} variant="outlined" className="feeling-chip" />
+                <Chip label={t('needHelp')} variant="outlined" className="feeling-chip" />
               </Box>
             </CardContent>
           </Card>
@@ -166,7 +170,7 @@ const ElderlyDashboard = () => {
             <Card className="loading-card">
               <CircularProgress className="loading-spinner" />
               <Typography className="loading-text">
-                {getTranslation(language, 'loadingHealth')}
+                {t('loadingHealth')}
               </Typography>
             </Card>
           )}
@@ -194,7 +198,7 @@ const ElderlyDashboard = () => {
             <CardContent className="medications-content">
               <Typography variant="h5" gutterBottom className="medications-title">
                 <Medication className="section-icon" />
-                {getTranslation(language, 'todaysMedications')}
+                {t('todaysMedications')}
               </Typography>
 
               {todaysMedicines.length > 0 ? (
@@ -212,7 +216,7 @@ const ElderlyDashboard = () => {
                               onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
                               className="taken-btn"
                             >
-                              ✅ {getTranslation(language, 'takenIt')}
+                              ✅ {t('takenIt')}
                             </Button>
                           </Box>
                         </CardContent>
@@ -223,10 +227,10 @@ const ElderlyDashboard = () => {
               ) : (
                 <Box className="no-medications">
                   <Typography variant="h6" className="no-medications-title">
-                    🎉 {getTranslation(language, 'noMedications')}
+                    🎉 {t('noMedications')}
                   </Typography>
                   <Typography variant="body1" className="no-medications-text">
-                    {getTranslation(language, 'enjoyDay')}
+                    {t('enjoyDay')}
                   </Typography>
                 </Box>
               )}
@@ -242,17 +246,17 @@ const ElderlyDashboard = () => {
             className="reminder-dialog"
           >
             <DialogTitle className="reminder-dialog-title">
-              {getTranslation(language, 'medicationReminder')}
+              {t('medicationReminder')}
             </DialogTitle>
             <DialogContent>
               <Typography variant="h6" className="reminder-medicine-name">
-                {getTranslation(language, 'timeToTake')} {reminderDialog.medicine?.name}
+                {t('timeToTake')} {reminderDialog.medicine?.name}
               </Typography>
               <Typography variant="body1" className="reminder-dosage">
-                {getTranslation(language, 'dosage')} {reminderDialog.medicine?.dosage}
+                {t('dosage')} {reminderDialog.medicine?.dosage}
               </Typography>
               <Typography variant="body2" color="textSecondary" className="reminder-time">
-                {getTranslation(language, 'scheduledTime')} {reminderDialog.scheduledTime}
+                {t('scheduledTime')} {reminderDialog.scheduledTime}
               </Typography>
               <Button
                 onClick={() => triggerDemoNotification(reminderDialog.medicine)}
@@ -261,7 +265,7 @@ const ElderlyDashboard = () => {
                 fullWidth
                 className="test-notification-btn"
               >
-                {getTranslation(language, 'testNotification')} ({user?.preferredLanguage || 'English'})
+                {t('testNotification')} ({user?.preferredLanguage || 'English'})
               </Button>
             </DialogContent>
             <DialogActions className="reminder-actions">
@@ -273,7 +277,7 @@ const ElderlyDashboard = () => {
                 fullWidth
                 className="reminder-taken-btn"
               >
-                {getTranslation(language, 'takenIt')}
+                {t('takenIt')}
               </Button>
             </DialogActions>
           </Dialog>

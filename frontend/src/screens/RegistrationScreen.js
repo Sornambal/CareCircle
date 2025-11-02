@@ -175,12 +175,21 @@ const RegistrationScreen = () => {
                 value={formData.preferredLanguage}
                 label="Preferred Language"
                 onChange={handleChange}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: 2, minWidth: 120 }}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 200,
+                    },
+                  },
+                }}
               >
-                <MenuItem value="English">English</MenuItem>
                 <MenuItem value="Tamil">Tamil</MenuItem>
+                <MenuItem value="English">English</MenuItem>
+                <MenuItem value="Telugu">Telugu</MenuItem>
                 <MenuItem value="Hindi">Hindi</MenuItem>
                 <MenuItem value="Malayalam">Malayalam</MenuItem>
+               
               </Select>
             </FormControl>
 

@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './utils/i18n'; // Initialize i18n
+
+// Polyfill for process.env
+if (typeof process === 'undefined') {
+  window.process = { env: {} };
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

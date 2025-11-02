@@ -8,7 +8,7 @@ import usePWAInstall from '../hooks/usePWAInstall';
 import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, IconButton } from '@mui/material';
 import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp, GetApp } from '@mui/icons-material';
-import { getTranslation } from '../utils/translations';
+import { t, setLanguage } from '../utils/i18n';
 import './CaregiverDashboard.css';
 
 const CaregiverDashboard = () => {
@@ -59,6 +59,10 @@ const CaregiverDashboard = () => {
       console.warn('Failed to persist user language preference', e);
     }
   };
+
+  useEffect(() => {
+    setLanguage(language); // Set language for polyglot
+  }, [language]);
 
   useEffect(() => {
     const loadMedicines = async () => {
@@ -321,10 +325,10 @@ const CaregiverDashboard = () => {
                 <Favorite className="logo-icon" />
                 <Box className="logo-text">
                   <Typography variant="h5" component="div" className="logo-title">
-                    {getTranslation(language, 'careCircle')}
+                    {t('careCircle')}
                   </Typography>
                   <Typography variant="body2" className="logo-subtitle">
-                    {getTranslation(language, 'yourHealthCompanion')}
+                    {t('yourHealthCompanion')}
                   </Typography>
                 </Box>
               </Box>
@@ -340,7 +344,7 @@ const CaregiverDashboard = () => {
             <CardContent className="quick-actions-content">
               <Typography variant="h6" gutterBottom className="quick-actions-title">
                 <Person className="section-icon" />
-                {getTranslation(language, 'quickActions')}
+                {t('quickActions')}
               </Typography>
               <Box className="quick-actions-buttons">
                 <Button
@@ -350,7 +354,7 @@ const CaregiverDashboard = () => {
                   className="add-medicine-btn"
                   fullWidth
                 >
-                  {getTranslation(language, 'addMedicine')}
+                  {t('addMedicine')}
                 </Button>
                 <Button
                   variant="outlined"
@@ -359,7 +363,7 @@ const CaregiverDashboard = () => {
                   className="add-contact-btn"
                   fullWidth
                 >
-                  {getTranslation(language, 'addEmergencyContact')}
+                  {t('addEmergencyContact')}
                 </Button>
               </Box>
             </CardContent>
@@ -370,7 +374,7 @@ const CaregiverDashboard = () => {
             <Card className="loading-card">
               <CircularProgress className="loading-spinner" />
               <Typography className="loading-text">
-                {getTranslation(language, 'loadingHealth')}
+                {t('loadingHealth')}
               </Typography>
             </Card>
           )}
@@ -398,7 +402,7 @@ const CaregiverDashboard = () => {
             <CardContent className="medications-content">
               <Typography variant="h5" gutterBottom className="medications-title">
                 <Medication className="section-icon" />
-                {getTranslation(language, 'todaysMedications')}
+                {t('todaysMedications')}
               </Typography>
 
               {todaysMedicines.length > 0 ? (
@@ -437,10 +441,10 @@ const CaregiverDashboard = () => {
               ) : (
                 <Box className="no-medications">
                   <Typography variant="h6" className="no-medications-title">
-                    🎉 {getTranslation(language, 'noMedications')}
+                    🎉 {t('noMedications')}
                   </Typography>
                   <Typography variant="body1" className="no-medications-text">
-                    {getTranslation(language, 'enjoyDay')}
+                    {t('enjoyDay')}
                   </Typography>
                 </Box>
               )}
@@ -456,17 +460,17 @@ const CaregiverDashboard = () => {
             className="reminder-dialog"
           >
             <DialogTitle className="reminder-dialog-title">
-              {getTranslation(language, 'medicationReminder')}
+              {t('medicationReminder')}
             </DialogTitle>
             <DialogContent>
               <Typography variant="h6" className="reminder-medicine-name">
-                {getTranslation(language, 'timeToTake')} {reminderDialog.medicine?.name}
+                {t('timeToTake')} {reminderDialog.medicine?.name}
               </Typography>
               <Typography variant="body1" className="reminder-dosage">
-                {getTranslation(language, 'dosage')} {reminderDialog.medicine?.dosage}
+                {t('dosage')} {reminderDialog.medicine?.dosage}
               </Typography>
               <Typography variant="body2" color="textSecondary" className="reminder-time">
-                {getTranslation(language, 'scheduledTime')} {reminderDialog.scheduledTime}
+                {t('scheduledTime')} {reminderDialog.scheduledTime}
               </Typography>
               <Button
                 onClick={() => triggerDemoNotification(reminderDialog.medicine)}
@@ -475,7 +479,7 @@ const CaregiverDashboard = () => {
                 fullWidth
                 className="test-notification-btn"
               >
-                {getTranslation(language, 'testNotification')} ({user?.preferredLanguage || 'English'})
+                {t('testNotification')} ({user?.preferredLanguage || 'English'})
               </Button>
             </DialogContent>
             <DialogActions className="reminder-actions">
@@ -487,14 +491,14 @@ const CaregiverDashboard = () => {
                 fullWidth
                 className="reminder-taken-btn"
               >
-                {getTranslation(language, 'takenIt')}
+                {t('takenIt')}
               </Button>
             </DialogActions>
           </Dialog>
 
           {/* Caregiver Sections */}
           <Typography variant="h6" gutterBottom className="section-heading">
-            {getTranslation(language, 'emergencyContacts')}
+            {t('emergencyContacts')}
           </Typography>
           <Grid container spacing={{ xs: 2, sm: 2 }} className="contacts-grid">
             {emergencyContacts.map((contact) => (
@@ -533,7 +537,7 @@ const CaregiverDashboard = () => {
           </Grid>
 
           <Typography variant="h6" gutterBottom className="section-heading">
-            {getTranslation(language, 'reportTracking')}
+            {t('reportTracking')}
           </Typography>
           <Button
             variant="contained"
@@ -542,7 +546,7 @@ const CaregiverDashboard = () => {
             fullWidth
             className="download-report-btn"
           >
-            {getTranslation(language, 'downloadReport')}
+            {t('downloadReport')}
           </Button>
           <ReportCard adherence={calculateAdherence()} />
 

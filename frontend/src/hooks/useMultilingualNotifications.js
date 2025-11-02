@@ -1,19 +1,25 @@
 import { useEffect } from 'react';
 import React, { useRef, useState } from 'react';
-import { getTranslation, getVoiceLangCode } from '../utils/translations';
+import { t, setLanguage } from '../utils/i18n';
+import { getVoiceLangCode } from '../utils/translations'; // Keep for voice codes
 
 const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken) => {
   const preferredLanguage = user?.preferredLanguage || 'English';
   const [voicesLoaded, setVoicesLoaded] = useState(false);
 
+  // Set language for polyglot
+  useEffect(() => {
+    setLanguage(preferredLanguage);
+  }, [preferredLanguage]);
+
   // Get message in preferred language, fallback to English
   const getMessage = (medicine) => {
-    return getTranslation(preferredLanguage, 'medicineReminderMessage', medicine);
+    return t('medicineReminderMessage', { name: medicine.name, dosage: medicine.dosage });
   };
 
   // Short voice phrase like "Take medicine" in preferred language
   const getVoiceShortPhrase = () => {
-    return getTranslation(preferredLanguage, 'takeMedicine');
+    return t('takeMedicine');
   };
 
   // Get voice lang code, fallback to English
