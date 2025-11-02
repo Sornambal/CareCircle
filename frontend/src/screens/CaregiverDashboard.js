@@ -508,15 +508,6 @@ const CaregiverDashboard = () => {
           <Typography variant="h6" gutterBottom className="section-heading">
             {getTranslation(language, 'emergencyContacts')}
           </Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setContactModalOpen(true)}
-            fullWidth
-            className="add-contact-main-btn"
-          >
-            + {getTranslation(language, 'addEmergencyContact')}
-          </Button>
           <Grid container spacing={{ xs: 2, sm: 2 }} className="contacts-grid">
             {emergencyContacts.map((contact) => (
               <Grid item xs={12} sm={6} md={4} key={contact._id}>

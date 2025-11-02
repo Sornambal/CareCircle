@@ -36,7 +36,6 @@ const ProfileCard = ({ user }) => {
       </Avatar>
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="h6">{name}</Typography>
-        <Typography variant="body2">Age: {age}</Typography>
         <Typography variant="body2">Role: {role}</Typography>
       </Box>
       <Stack direction="row" spacing={1}>
