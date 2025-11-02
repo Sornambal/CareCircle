@@ -1,7 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
 
 // Import translation files
 import en from '../locales/en.json';
@@ -19,32 +17,40 @@ const resources = {
   hi: { translation: hi },
 };
 
+// Language mapping from full names to i18n codes
+const languageMap = {
+  'English': 'en',
+  'Tamil': 'ta',
+  'Telugu': 'te',
+  'Hindi': 'hi',
+  'Malayalam': 'ml'
+};
+
+// Get default language from localStorage user preference
+const getDefaultLanguage = () => {
+  try {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      return languageMap[user.preferredLanguage] || 'en';
+    }
+  } catch (e) {
+    console.warn('Error parsing user data for language:', e);
+  }
+  return 'en';
+};
+
 i18n
-  .use(Backend)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    lng: getDefaultLanguage(), // Set language from user preference
     fallbackLng: 'en',
     debug: false,
     interpolation: {
       escapeValue: false,
     },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-    },
   });
-
-// Function to set language
-export const setLanguage = (language) => {
-  i18n.changeLanguage(language);
-};
-
-// Translation function
-export const t = (key, options = {}) => {
-  return i18n.t(key, options);
-};
 
 // Get current language
 export const getCurrentLanguage = () => {

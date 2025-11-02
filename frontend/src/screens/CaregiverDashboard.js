@@ -8,10 +8,11 @@ import usePWAInstall from '../hooks/usePWAInstall';
 import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, IconButton } from '@mui/material';
 import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp, GetApp } from '@mui/icons-material';
-import { t, setLanguage } from '../utils/i18n';
+import { useTranslation } from 'react-i18next';
 import './CaregiverDashboard.css';
 
 const CaregiverDashboard = () => {
+  const { t, i18n } = useTranslation();
   const [medicines, setMedicines] = useState([]);
   const [todaysMedicines, setTodaysMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +49,16 @@ const CaregiverDashboard = () => {
     }
   });
 
-  const language = user?.preferredLanguage || 'English';
+  // Language mapping from full names to i18n codes
+  const languageMap = {
+    'English': 'en',
+    'Tamil': 'ta',
+    'Telugu': 'te',
+    'Hindi': 'hi',
+    'Malayalam': 'ml'
+  };
+
+  const language = languageMap[user?.preferredLanguage] || 'en';
 
   const handleLanguageChange = (newLang) => {
     const updatedUser = { ...(user || {}), preferredLanguage: newLang };
@@ -58,11 +68,13 @@ const CaregiverDashboard = () => {
     } catch (e) {
       console.warn('Failed to persist user language preference', e);
     }
+    // Update i18n language immediately
+    i18n.changeLanguage(languageMap[newLang] || 'en');
   };
 
   useEffect(() => {
-    setLanguage(language); // Set language for polyglot
-  }, [language]);
+    i18n.changeLanguage(language); // Set language for i18n
+  }, [language, i18n]);
 
   useEffect(() => {
     const loadMedicines = async () => {

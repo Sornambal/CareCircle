@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, CircularProgress } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { sendSOSAlert, triggerVoiceSOS } from '../utils/api';
+import { useTranslation } from 'react-i18next';
 
 // Capacitor imports for mobile notifications
 let LocalNotifications = null;
@@ -20,6 +21,9 @@ const SOSButton = ({ type, user }) => {
   const [reminderInterval, setReminderInterval] = useState(null);
   const [alertSent, setAlertSent] = useState(false);
   const [sending, setSending] = useState(false);
+  
+  // Get i18n instance
+  const { t } = useTranslation();
 
   // Voice alert function with multilingual support
   const playVoiceAlert = (message) => {
@@ -220,7 +224,7 @@ const SOSButton = ({ type, user }) => {
         }}
       >
         <Warning sx={{ mr: 1 }} />
-        SOS {type === 'all' ? 'All' : 'Relatives'}
+        {type === 'all' ? t('sosAll') : t('sosRelatives')}
       </Button>
 
       <Dialog
@@ -235,7 +239,7 @@ const SOSButton = ({ type, user }) => {
         }}
       >
         <DialogTitle sx={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }}>
-          {alertSent ? '✅ SOS Alert Sent!' : '🚨 Sending Emergency Alert...'}
+          {alertSent ? t('sosTriggered') : t('sendingEmergencyAlert')}
         </DialogTitle>
         <DialogContent sx={{ textAlign: 'center', p: 4 }}>
           {!alertSent ? (
@@ -244,19 +248,19 @@ const SOSButton = ({ type, user }) => {
                 {countdown}
               </Typography>
               <Typography variant="h5" sx={{ mb: 2 }}>
-                {type === 'all' ? 'Alerting ALL emergency contacts' : 'Alerting family contacts only'}
+                {type === 'all' ? t('alertingAll') : t('alertingFamily')}
               </Typography>
               <Typography variant="h6">
-                Tap "Cancel Alert" to stop
+                {t('tapToCancel')}
               </Typography>
             </>
           ) : (
             <Box>
               <Typography variant="h4" sx={{ mb: 2 }}>
-                Voice and text alerts sent to:
+                {t('alertsSentTo')}
               </Typography>
               <Typography variant="h6">
-                {type === 'all' ? '• Ambulance services\n• Caretakers\n• Family members' : '• Caretakers\n• Family members'}
+                {type === 'all' ? t('emergencyContactsList') : t('familyContactsList')}
               </Typography>
             </Box>
           )}
@@ -298,7 +302,7 @@ const SOSButton = ({ type, user }) => {
                   },
                 }}
               >
-                Cancel Alert
+                {t('cancelAlert')}
               </Button>
             )
           ) : (

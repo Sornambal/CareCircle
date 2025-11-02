@@ -11,6 +11,7 @@ import CaregiverDashboard from './screens/CaregiverDashboard';
 import SOSNotification from './components/SOSNotification';
 import RequireAuth from './components/RequireAuth';
 import useSocket from './hooks/useSocket';
+import i18n from './utils/i18n';
 
 
 const theme = createTheme({
@@ -79,11 +80,11 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
     <AppBar position="static" color="primary">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          CareCircle
+          {i18n.t('careCircle')}
         </Typography>
 
         <Button color="inherit" onClick={handleLogout}>
-          Logout
+          {i18n.t('logout')}
         </Button>
       </Toolbar>
       {/* SOS Notification Component */}
@@ -95,20 +96,47 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
 function App() {
   const [sosNotification, setSOSNotification] = useState(null);
   const [initialized, setInitialized] = useState(false);
-  
+
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('user');
-      
+
       if (!token || !user) {
         localStorage.clear();
       }
       setInitialized(true);
     };
-    
+
     checkAuth();
   }, []);
+
+  // Update i18n language when user data changes
+  useEffect(() => {
+    const updateLanguage = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          const languageMap = {
+            'English': 'en',
+            'Tamil': 'ta',
+            'Telugu': 'te',
+            'Hindi': 'hi',
+            'Malayalam': 'ml'
+          };
+          const language = languageMap[user.preferredLanguage] || 'en';
+          if (i18n.language !== language) {
+            i18n.changeLanguage(language);
+          }
+        }
+      } catch (e) {
+        console.warn('Error updating language:', e);
+      }
+    };
+
+    updateLanguage();
+  }, [initialized]);
 
   // Handle SOS notifications
   const handleSOSNotification = (notification) => {

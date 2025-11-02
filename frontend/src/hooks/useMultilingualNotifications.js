@@ -1,16 +1,28 @@
 import { useEffect } from 'react';
 import React, { useRef, useState } from 'react';
-import { t, setLanguage } from '../utils/i18n';
+import { useTranslation } from 'react-i18next';
 import { getVoiceLangCode } from '../utils/translations'; // Keep for voice codes
 
 const useMultilingualNotifications = (todaysMedicines, user, token, onMarkTaken) => {
+  const { t, i18n } = useTranslation();
   const preferredLanguage = user?.preferredLanguage || 'English';
   const [voicesLoaded, setVoicesLoaded] = useState(false);
 
-  // Set language for polyglot
+  // Language mapping from full names to i18n codes
+  const languageMap = {
+    'English': 'en',
+    'Tamil': 'ta',
+    'Telugu': 'te',
+    'Hindi': 'hi',
+    'Malayalam': 'ml'
+  };
+
+  const language = languageMap[preferredLanguage] || 'en';
+
+  // Set language for i18n
   useEffect(() => {
-    setLanguage(preferredLanguage);
-  }, [preferredLanguage]);
+    i18n.changeLanguage(language);
+  }, [language, i18n]);
 
   // Get message in preferred language, fallback to English
   const getMessage = (medicine) => {

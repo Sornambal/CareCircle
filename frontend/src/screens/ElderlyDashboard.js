@@ -6,10 +6,11 @@ import usePWAInstall from '../hooks/usePWAInstall';
 import { getTodaysMedicines, markMedicineTaken } from '../utils/api';
 import { Box, Typography, CircularProgress, Alert, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Card, CardContent, Avatar, IconButton, AppBar, Toolbar, Select, MenuItem } from '@mui/material';
 import { Medication, AccessTime, Favorite, VolumeUp } from '@mui/icons-material';
-import { t, setLanguage } from '../utils/i18n';
+import { useTranslation } from 'react-i18next';
 import './DashboardScreen.css';
 
 const ElderlyDashboard = () => {
+  const { t, i18n } = useTranslation();
   const [todaysMedicines, setTodaysMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +28,23 @@ const ElderlyDashboard = () => {
     }
   });
 
-  const language = user?.preferredLanguage || 'English';
+  // Language mapping from full names to i18n codes
+  const languageMap = {
+    'English': 'en',
+    'Tamil': 'ta',
+    'Telugu': 'te',
+    'Hindi': 'hi',
+    'Malayalam': 'ml'
+  };
+
+  const language = languageMap[user?.preferredLanguage] || 'en';
+
+  // Set initial language based on user preference
+  useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
 
   const handleLanguageChange = (newLang) => {
     const updatedUser = { ...(user || {}), preferredLanguage: newLang };
@@ -37,11 +54,10 @@ const ElderlyDashboard = () => {
     } catch (e) {
       console.warn('Failed to persist user language preference', e);
     }
+    // Update i18n language immediately
+    const newLangCode = languageMap[newLang] || 'en';
+    i18n.changeLanguage(newLangCode);
   };
-
-  useEffect(() => {
-    setLanguage(language); // Set language for polyglot
-  }, [language]);
 
   useEffect(() => {
     const fetchTodaysMedicines = async () => {
@@ -53,7 +69,7 @@ const ElderlyDashboard = () => {
           setTodaysMedicines(response.data || []);
         }
       } catch (error) {
-        setError('Failed to load medicines');
+        setError(t('failedToLoadMedicines'));
       }
       setLoading(false);
     };
