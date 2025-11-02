@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui/material';
@@ -9,6 +9,7 @@ import LoginScreen from './screens/LoginScreen';
 import ElderlyDashboard from './screens/ElderlyDashboard';
 import CaregiverDashboard from './screens/CaregiverDashboard';
 import SOSNotification from './components/SOSNotification';
+import RequireAuth from './components/RequireAuth';
 import useSocket from './hooks/useSocket';
 
 
@@ -53,12 +54,26 @@ const theme = createTheme({
 const Navigation = ({ sosNotification, onSOSClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [user, setUser] = useState(() => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (e) {
+      console.error('Error parsing user data:', e);
+      return null;
+    }
+  });
 
-  if (!token || location.pathname === '/' || location.pathname === '/login') {
+  if (!user || location.pathname === '/' || location.pathname === '/login') {
     return null;
   }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
+  };
 
   return (
     <AppBar position="static" color="primary">
@@ -67,15 +82,22 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
           CareCircle
         </Typography>
         {user.role === 'caregiver' && (
-          <Button color="inherit" onClick={() => navigate('/dashboard')}>
+          <Button 
+            color="inherit" 
+            onClick={() => navigate('/caregiver-dashboard')}
+          >
             Dashboard
           </Button>
         )}
-        <Button color="inherit" onClick={() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          navigate('/login');
-        }}>
+        {user.role === 'elderly' && (
+          <Button 
+            color="inherit" 
+            onClick={() => navigate('/elderly-dashboard')}
+          >
+            Dashboard
+          </Button>
+        )}
+        <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>
       </Toolbar>
@@ -87,7 +109,21 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
 
 function App() {
   const [sosNotification, setSOSNotification] = useState(null);
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [initialized, setInitialized] = useState(false);
+  
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      
+      if (!token || !user) {
+        localStorage.clear();
+      }
+      setInitialized(true);
+    };
+    
+    checkAuth();
+  }, []);
 
   // Handle SOS notifications
   const handleSOSNotification = (notification) => {
@@ -99,7 +135,8 @@ function App() {
   };
 
   // Initialize socket connection for logged-in users
-  useSocket(user._id, handleSOSNotification);
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  useSocket(storedUser._id, handleSOSNotification);
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,11 +147,37 @@ function App() {
           <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
             <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
               <Routes>
-                {/* make the root path render the login page */}
+                {/* Public routes */}
                 <Route path="/" element={<LoginScreen />} />
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<RegistrationScreen />} />
-                <Route path="/dashboard" element={user.role === 'elderly' ? <ElderlyDashboard /> : <CaregiverDashboard />} />
+
+                {/* Role-specific dashboards - using window.location in RequireAuth */}
+                <Route 
+                  path="/elderly-dashboard" 
+                  element={
+                    <RequireAuth role="elderly">
+                      <ElderlyDashboard />
+                    </RequireAuth>
+                  } 
+                />
+
+                <Route 
+                  path="/caregiver-dashboard" 
+                  element={
+                    <RequireAuth role="caregiver">
+                      <CaregiverDashboard />
+                    </RequireAuth>
+                  } 
+                />
+
+                {/* Force login for unknown routes */}
+                <Route 
+                  path="*" 
+                  element={
+                    <Navigate to="/login" replace />
+                  } 
+                />
               </Routes>
             </Suspense>
           </Box>

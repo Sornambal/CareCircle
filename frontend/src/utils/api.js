@@ -17,6 +17,11 @@ export const login = (data) => {
   return axios.post(`${API_BASE_URL}/auth/login`, data);
 };
 
+// Elderly Login
+export const elderlyLogin = (data) => {
+  return axios.post(`${API_BASE_URL}/auth/elderly-login`, data);
+};
+
 // Caregiver login
 export const caregiverLogin = (data) => {
   return axios.post(`${API_BASE_URL}/auth/login`, data);

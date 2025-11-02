@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
   caregiverPhone: {
     type: String,
     required: [true, 'Caregiver phone is required'],
+    unique: true,
   },
   caregiverEmail: {
     type: String,

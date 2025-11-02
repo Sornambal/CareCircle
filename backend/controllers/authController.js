@@ -76,14 +76,22 @@ const login = async (req, res) => {
       }
     } else {
       // Caregiver login or initial elderly setup
-      user = await User.findOne({ caregiverPhone, caregiverName });
-      if (!user || !(await user.matchPassword(password))) {
-        return res.status(401).json({ message: 'Invalid phone or password' });
-      }
-      // For elderly initial setup, generate device token
-      if (role === 'elderly' && !user.deviceToken) {
-        user.deviceToken = generateToken(user._id) + '_device'; // Simple device token
-        await user.save();
+      if (role === 'caregiver') {
+        user = await User.findOne({ caregiverPhone, caregiverName });
+        if (!user || !(await user.matchPassword(password))) {
+          return res.status(401).json({ message: 'Invalid phone or password' });
+        }
+      } else {
+        // Elderly login with name and phone
+        user = await User.findOne({ elderlyPhone: caregiverPhone, elderlyName: caregiverName });
+        if (!user || !(await user.matchPassword(password))) {
+          return res.status(401).json({ message: 'Invalid phone or password' });
+        }
+        // For elderly initial setup, generate device token
+        if (!user.deviceToken) {
+          user.deviceToken = generateToken(user._id) + '_device'; // Simple device token
+          await user.save();
+        }
       }
     }
 
@@ -128,13 +136,17 @@ const authUser = async (req, res) => {
 };
 
 const elderlyLogin = async (req, res) => {
-  const { phone } = req.body;
+  const { name, phone, password } = req.body;
+
+  console.log('Elderly login attempt:', { name, phone, password });
 
   try {
-    const user = await User.findOne({ elderlyPhone: phone });
+    const user = await User.findOne({ elderlyName: name, elderlyPhone: phone });
 
-    if (user) {
-      // Generate token without password
+    console.log('Found user:', user ? { elderlyName: user.elderlyName, elderlyPhone: user.elderlyPhone } : 'No user found');
+
+    if (user && (await user.matchPassword(password))) {
+      // Generate token
       const token = generateToken(user._id);
     res.json({
       _id: user._id,
@@ -145,9 +157,11 @@ const elderlyLogin = async (req, res) => {
       token,
     });
     } else {
-      res.status(401).json({ message: 'Invalid elderly user phone number' });
+      console.log('Login failed: invalid credentials');
+      res.status(401).json({ message: 'Invalid name, phone or password' });
     }
   } catch (error) {
+    console.log('Login error:', error.message);
     res.status(500).json({ message: error.message });
   }
 };

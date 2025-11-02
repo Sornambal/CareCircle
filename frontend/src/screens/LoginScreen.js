@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../utils/api';
+import { login, elderlyLogin } from '../utils/api';
 import { FaUser, FaLock, FaPhone } from 'react-icons/fa';
 import { IconButton } from '@mui/material';
 import { GetApp } from '@mui/icons-material';
@@ -19,8 +19,7 @@ const LoginScreen = () => {
   const [autoLoading, setAutoLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const { isInstallable, installPWA } = usePWAInstall();
+  const { isInstallable, installPWA } = usePWAInstall;
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
@@ -32,14 +31,42 @@ const LoginScreen = () => {
     setError('');
     try {
       const data = { ...formData, role };
-      const response = await login(data);
+      let response;
+      if (role === 'elderly') {
+        response = await elderlyLogin({ name: formData.name, phone: formData.phone, password: formData.password });
+      } else {
+        response = await login({ caregiverName: formData.name, caregiverPhone: formData.phone, password: formData.password, role: 'caregiver' });
+      }
       if (response.status === 200 && response.data.token) {
+        // Clear any existing auth data first
+        localStorage.clear();
+        
+        // Set the role explicitly based on the login form
+        const userData = {
+          ...response.data,
+          role: role // Use the role from login form
+        };
+        
+        console.log('Setting user role:', role);
+        
+        // Store auth data
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data));
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         if (response.data.deviceToken) {
           localStorage.setItem('deviceToken', response.data.deviceToken);
         }
-        navigate(response.data.role === 'caregiver' ? '/dashboard' : '/dashboard');
+
+        // Force a small delay to ensure storage is set
+        setTimeout(() => {
+          if (role === 'elderly') {
+            console.log('Navigating to elderly dashboard...');
+            window.location.href = '/elderly-dashboard';
+          } else {
+            console.log('Navigating to caregiver dashboard...');
+            window.location.href = '/caregiver-dashboard';
+          }
+        }, 100);
       } else {
         setError(response.data.message || 'Login failed');
       }
@@ -93,13 +120,13 @@ const LoginScreen = () => {
       <div className="form-box login">
         <form onSubmit={handleSubmit}>
           <h1>Hello Elderly User</h1>
-          <p className="subtitle">Enter caregiver details to setup or login</p>
+          <p className="subtitle">Enter elderly name, phone and caregiver password to login</p>
 
           <div className="input-box">
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Elderly Name"
               value={formData.name}
               onChange={handleChange}
               required
@@ -111,7 +138,7 @@ const LoginScreen = () => {
             <input
               type="tel"
               name="phone"
-              placeholder="Phone Number"
+              placeholder="Elderly Phone Number"
               value={formData.phone}
               onChange={handleChange}
               required
@@ -123,7 +150,7 @@ const LoginScreen = () => {
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Caregiver Password"
               value={formData.password}
               onChange={handleChange}
               required
