@@ -341,18 +341,6 @@ const CaregiverDashboard = () => {
                   <MenuItem value="Hindi">हिन्दी (Hindi)</MenuItem>
                   <MenuItem value="Malayalam">മലയാളം (Malayalam)</MenuItem>
                 </Select>
-
-                <IconButton
-                  className="voice-test-btn"
-                  title="List voices & play test"
-                  onClick={() => {
-                    if (typeof testVoiceSupport === 'function') testVoiceSupport();
-                    const sampleMed = { name: 'Paracetamol', dosage: '1 tablet' };
-                    if (typeof triggerDemoNotification === 'function') triggerDemoNotification(sampleMed);
-                  }}
-                >
-                  <VolumeUp />
-                </IconButton>
               </Box>
             </Toolbar>
           </AppBar>
