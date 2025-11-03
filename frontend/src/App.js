@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui/material';
@@ -93,6 +93,19 @@ const Navigation = ({ sosNotification, onSOSClose }) => {
   );
 };
 
+const AppLayout = ({ sosNotification, onSOSClose, children }) => {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navigation sosNotification={sosNotification} onSOSClose={onSOSClose} />
+      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
+        <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
+          <Outlet />
+        </Suspense>
+      </Box>
+    </Box>
+  );
+};
+
 function App() {
   const [sosNotification, setSOSNotification] = useState(null);
   const [initialized, setInitialized] = useState(false);
@@ -151,51 +164,25 @@ function App() {
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   useSocket(storedUser._id, handleSOSNotification);
 
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <AppLayout sosNotification={sosNotification} onSOSClose={handleSOSClose} />,
+      children: [
+        { index: true, element: <LoginScreen /> },
+        { path: 'login', element: <LoginScreen /> },
+        { path: 'register', element: <RegistrationScreen /> },
+        { path: 'elderly-dashboard', element: <RequireAuth role="elderly"><ElderlyDashboard /></RequireAuth> },
+        { path: 'caregiver-dashboard', element: <RequireAuth role="caregiver"><CaregiverDashboard /></RequireAuth> },
+        { path: '*', element: <Navigate to="/login" replace /> },
+      ],
+    },
+  ]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Navigation sosNotification={sosNotification} onSOSClose={handleSOSClose} />
-          <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
-            <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<LoginScreen />} />
-                <Route path="/login" element={<LoginScreen />} />
-                <Route path="/register" element={<RegistrationScreen />} />
-
-                {/* Role-specific dashboards - using window.location in RequireAuth */}
-                <Route 
-                  path="/elderly-dashboard" 
-                  element={
-                    <RequireAuth role="elderly">
-                      <ElderlyDashboard />
-                    </RequireAuth>
-                  } 
-                />
-
-                <Route 
-                  path="/caregiver-dashboard" 
-                  element={
-                    <RequireAuth role="caregiver">
-                      <CaregiverDashboard />
-                    </RequireAuth>
-                  } 
-                />
-
-                {/* Force login for unknown routes */}
-                <Route 
-                  path="*" 
-                  element={
-                    <Navigate to="/login" replace />
-                  } 
-                />
-              </Routes>
-            </Suspense>
-          </Box>
-        </Box>
-      </Router>
+      <RouterProvider router={router} future={{ v7_startTransition: true, v7_relativeSplatPath: true }} />
     </ThemeProvider>
   );
 }
