@@ -5,11 +5,21 @@ import RecoveryGraph from '../components/RecoveryGraph';
 import ProfileCard from '../components/ProfileCard';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import usePWAInstall from '../hooks/usePWAInstall';
-import { fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken, updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact, updateEmergencyContact, deleteEmergencyContact } from '../utils/api';
-import { Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField, MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, IconButton } from '@mui/material';
-import { Medication, AccessTime, Person, LocalHospital, Favorite, VolumeUp, GetApp } from '@mui/icons-material';
+import {
+  fetchMedicines, addMedicine, getTodaysMedicines, markMedicineTaken,
+  updateMedicine, deleteMedicine, getEmergencyContacts, addEmergencyContact,
+  updateEmergencyContact, deleteEmergencyContact
+} from '../utils/api';
+import {
+  Box, Typography, CircularProgress, Alert, Grid, Button, Modal, TextField,
+  MenuItem, FormControl, InputLabel, Select, AppBar, Toolbar, Dialog,
+  DialogTitle, DialogContent, DialogActions, Card, CardContent
+} from '@mui/material';
+import {
+  Medication, AccessTime, Person, LocalHospital, Favorite
+} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import './CaregiverDashboard.css';
+import './DashboardScreen.css';
 
 const CaregiverDashboard = () => {
   const { t, i18n } = useTranslation();
@@ -300,16 +310,15 @@ const CaregiverDashboard = () => {
       const startDate = new Date();
       startDate.setDate(endDate.getDate() - 30);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/reports/generate-pdf?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/reports/generate-pdf?startDate=${startDate.toISOString().split('T')[0]}&endDate=${endDate.toISOString().split('T')[0]}`,
+        {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error('Failed to generate PDF report');
-      }
+      if (!response.ok) throw new Error('Failed to generate PDF report');
 
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -328,42 +337,38 @@ const CaregiverDashboard = () => {
 
   return (
     <>
-      <Box className="dashboard-container">
-        <Box className="dashboard-content">
+      <Box className="caregiver-dashboard">
+        <Box className="caregiver-dashboard__content">
           {/* Header Section */}
-          <AppBar position="static" elevation={0} className="dashboard-header">
-            <Toolbar className="header-toolbar">
-              <Box className="header-logo">
-                <Favorite className="logo-icon" />
-                <Box className="logo-text">
-                  <Typography variant="h5" component="div" className="logo-title">
+          <AppBar position="static" elevation={0} className="caregiver-dashboard__header">
+            <Toolbar className="caregiver-dashboard__header-toolbar">
+              <Box className="caregiver-dashboard__logo">
+                <Favorite className="caregiver-dashboard__logo-icon" />
+                <Box className="caregiver-dashboard__logo-text">
+                  <Typography variant="h5" component="div" className="caregiver-dashboard__logo-title">
                     {t('careCircle')}
                   </Typography>
-                  <Typography variant="body2" className="logo-subtitle">
+                  <Typography variant="body2" className="caregiver-dashboard__logo-subtitle">
                     {t('yourHealthCompanion')}
                   </Typography>
                 </Box>
               </Box>
-
-
             </Toolbar>
           </AppBar>
-
           <ProfileCard user={user} />
-
           {/* Caregiver Quick Actions */}
-          <Card className="quick-actions-card">
-            <CardContent className="quick-actions-content">
-              <Typography variant="h6" gutterBottom className="quick-actions-title">
-                <Person className="section-icon" />
+          <Card className="caregiver-dashboard__quick-actions">
+            <CardContent className="caregiver-dashboard__quick-actions-content">
+              <Typography variant="h6" gutterBottom className="caregiver-dashboard__quick-actions-title">
+                <Person className="caregiver-dashboard__section-icon" />
                 {t('quickActions')}
               </Typography>
-              <Box className="quick-actions-buttons">
+              <Box className="caregiver-dashboard__quick-actions-buttons">
                 <Button
                   variant="contained"
                   startIcon={<Medication />}
                   onClick={handleOpenModal}
-                  className="add-medicine-btn"
+                  className="caregiver-dashboard__btn-add-medicine"
                   fullWidth
                 >
                   {t('addMedicine')}
@@ -372,7 +377,7 @@ const CaregiverDashboard = () => {
                   variant="outlined"
                   startIcon={<LocalHospital />}
                   onClick={() => setContactModalOpen(true)}
-                  className="add-contact-btn"
+                  className="caregiver-dashboard__btn-add-contact"
                   fullWidth
                 >
                   {t('addEmergencyContact')}
@@ -380,57 +385,49 @@ const CaregiverDashboard = () => {
               </Box>
             </CardContent>
           </Card>
-
           {/* Loading and Error States */}
           {loading && (
-            <Card className="loading-card">
-              <CircularProgress className="loading-spinner" />
-              <Typography className="loading-text">
-                {t('loadingHealth')}
-              </Typography>
+            <Card className="caregiver-dashboard__loading-state">
+              <CircularProgress className="caregiver-dashboard__loading-spinner" />
+              <Typography className="caregiver-dashboard__loading-text">{t('loadingHealth')}</Typography>
             </Card>
           )}
           {error && (
-            <Alert severity="error" className="error-alert">
-              {error}
-            </Alert>
+            <Alert severity="error" className="caregiver-dashboard__error-alert">{error}</Alert>
           )}
-
           {/* Current Time Display */}
-          <Card className="time-card">
-            <CardContent className="time-content">
-              <AccessTime className="time-icon" />
-              <Typography variant="h3" className="time-display">
+          <Card className="caregiver-dashboard__time-card">
+            <CardContent className="caregiver-dashboard__time-card-content">
+              <AccessTime className="caregiver-dashboard__time-icon" />
+              <Typography variant="h3" className="caregiver-dashboard__time-value">
                 {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </Typography>
-              <Typography variant="h6" className="date-display">
+              <Typography variant="h6" className="caregiver-dashboard__date-value">
                 {currentTime.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </Typography>
             </CardContent>
           </Card>
-
           {/* Today's Medications Section */}
-          <Card className="medications-card">
-            <CardContent className="medications-content">
-              <Typography variant="h5" gutterBottom className="medications-title">
-                <Medication className="section-icon" />
+          <Card className="caregiver-dashboard__medications">
+            <CardContent className="caregiver-dashboard__medications-content">
+              <Typography variant="h5" gutterBottom className="caregiver-dashboard__medications-title">
+                <Medication className="caregiver-dashboard__section-icon" />
                 {t('todaysMedications')}
               </Typography>
-
               {todaysMedicines.length > 0 ? (
                 <Grid container spacing={{ xs: 2, sm: 3 }}>
                   {todaysMedicines.map((med) => (
                     <Grid item xs={12} sm={6} md={4} key={med._id}>
-                      <Card variant="outlined" className="medicine-item-card">
-                        <CardContent className="medicine-item-content">
+                      <Card variant="outlined" className="caregiver-dashboard__medicine-card">
+                        <CardContent className="caregiver-dashboard__medicine-card-content">
                           <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
-                          <Box className="medicine-actions">
-                            <Box className="medicine-edit-actions">
+                          <Box className="caregiver-dashboard__medicine-actions">
+                            <Box className="caregiver-dashboard__medicine-edit-actions">
                               <Button
                                 variant="outlined"
                                 size="small"
                                 onClick={() => handleEditMedicine(med)}
-                                className="edit-btn"
+                                className="caregiver-dashboard__btn-medicine-edit"
                               >
                                 Edit
                               </Button>
@@ -439,7 +436,7 @@ const CaregiverDashboard = () => {
                                 size="small"
                                 color="error"
                                 onClick={() => handleDeleteMedicine(med._id)}
-                                className="delete-btn"
+                                className="caregiver-dashboard__btn-medicine-delete"
                               >
                                 Delete
                               </Button>
@@ -451,37 +448,36 @@ const CaregiverDashboard = () => {
                   ))}
                 </Grid>
               ) : (
-                <Box className="no-medications">
-                  <Typography variant="h6" className="no-medications-title">
+                <Box className="caregiver-dashboard__no-medications">
+                  <Typography variant="h6" className="caregiver-dashboard__no-medications-title">
                     🎉 {t('noMedications')}
                   </Typography>
-                  <Typography variant="body1" className="no-medications-text">
+                  <Typography variant="body1" className="caregiver-dashboard__no-medications-text">
                     {t('enjoyDay')}
                   </Typography>
                 </Box>
               )}
             </CardContent>
           </Card>
-
           {/* Medication Reminder Dialog */}
           <Dialog
             open={reminderDialog.open}
             onClose={() => setReminderDialog({ open: false, medicine: null, scheduledTime: null })}
             fullWidth
             maxWidth="sm"
-            className="reminder-dialog"
+            className="caregiver-dashboard__reminder-modal"
           >
-            <DialogTitle className="reminder-dialog-title">
+            <DialogTitle className="caregiver-dashboard__reminder-modal-title">
               {t('medicationReminder')}
             </DialogTitle>
             <DialogContent>
-              <Typography variant="h6" className="reminder-medicine-name">
+              <Typography variant="h6" className="caregiver-dashboard__reminder-medicine-name">
                 {t('timeToTake')} {reminderDialog.medicine?.name}
               </Typography>
-              <Typography variant="body1" className="reminder-dosage">
+              <Typography variant="body1" className="caregiver-dashboard__reminder-dosage">
                 {t('dosage')} {reminderDialog.medicine?.dosage}
               </Typography>
-              <Typography variant="body2" color="textSecondary" className="reminder-time">
+              <Typography variant="body2" color="textSecondary" className="caregiver-dashboard__reminder-time">
                 {t('scheduledTime')} {reminderDialog.scheduledTime}
               </Typography>
               <Button
@@ -489,46 +485,43 @@ const CaregiverDashboard = () => {
                 variant="outlined"
                 color="secondary"
                 fullWidth
-                className="test-notification-btn"
+                className="caregiver-dashboard__test-notification-btn"
               >
                 {t('testNotification')} ({user?.preferredLanguage || 'English'})
               </Button>
             </DialogContent>
-            <DialogActions className="reminder-actions">
+            <DialogActions className="caregiver-dashboard__reminder-actions">
               <Button
                 onClick={() => handleTakeMedicine(reminderDialog.medicine?._id, reminderDialog.scheduledTime)}
                 variant="contained"
                 color="primary"
                 size="large"
                 fullWidth
-                className="reminder-taken-btn"
+                className="caregiver-dashboard__reminder-taken-btn"
               >
                 {t('takenIt')}
               </Button>
             </DialogActions>
           </Dialog>
-
           {/* Caregiver Sections */}
-          <Typography variant="h6" gutterBottom className="section-heading">
+          <Typography variant="h6" gutterBottom className="caregiver-dashboard__section-heading">
             {t('emergencyContacts')}
           </Typography>
-          <Grid container spacing={{ xs: 2, sm: 2 }} className="contacts-grid">
+          <Grid container spacing={{ xs: 2, sm: 2 }} className="caregiver-dashboard__contacts-grid">
             {emergencyContacts.map((contact) => (
               <Grid item xs={12} sm={6} md={4} key={contact._id}>
-                <Box className="contact-card">
-                  <Typography variant="h6" className="contact-name">
-                    {contact.name}
-                  </Typography>
-                  <Typography className="contact-info">Phone: {contact.phone}</Typography>
-                  <Typography className="contact-info">Email: {contact.email}</Typography>
-                  <Typography className="contact-info">Role: {contact.role}</Typography>
-                  <Box className="contact-actions">
+                <Box className="caregiver-dashboard__contact-card">
+                  <Typography variant="h6" className="caregiver-dashboard__contact-name">{contact.name}</Typography>
+                  <Typography className="caregiver-dashboard__contact-info">Phone: {contact.phone}</Typography>
+                  <Typography className="caregiver-dashboard__contact-info">Email: {contact.email}</Typography>
+                  <Typography className="caregiver-dashboard__contact-info">Role: {contact.role}</Typography>
+                  <Box className="caregiver-dashboard__contact-actions">
                     <Button
                       variant="outlined"
                       size="small"
                       onClick={() => handleEditContact(contact)}
                       fullWidth
-                      className="contact-edit-btn"
+                      className="caregiver-dashboard__btn-contact-edit"
                     >
                       Edit
                     </Button>
@@ -538,7 +531,7 @@ const CaregiverDashboard = () => {
                       color="error"
                       onClick={() => handleDeleteContact(contact._id)}
                       fullWidth
-                      className="contact-delete-btn"
+                      className="caregiver-dashboard__btn-contact-delete"
                     >
                       Delete
                     </Button>
@@ -547,8 +540,7 @@ const CaregiverDashboard = () => {
               </Grid>
             ))}
           </Grid>
-
-          <Typography variant="h6" gutterBottom className="section-heading">
+          <Typography variant="h6" gutterBottom className="caregiver-dashboard__section-heading">
             {t('reportTracking')}
           </Typography>
           <Button
@@ -556,15 +548,14 @@ const CaregiverDashboard = () => {
             color="primary"
             onClick={handleDownloadReport}
             fullWidth
-            className="download-report-btn"
+            className="caregiver-dashboard__btn-download-report"
           >
             {t('downloadReport')}
           </Button>
           <ReportCard adherence={calculateAdherence()} />
-
           {/* Medicine Taken Report Table */}
-          <Box className="report-table-container">
-            <table className="report-table">
+          <Box className="caregiver-dashboard__report-table-wrapper">
+            <table className="caregiver-dashboard__report-table">
               <thead>
                 <tr>
                   <th>Medicine Name</th>
@@ -577,19 +568,20 @@ const CaregiverDashboard = () => {
                 {medicines.map((med) => {
                   const today = new Date().toISOString().slice(0, 10);
                   const takenToday = med.taken.some(t => t.date && t.date.slice(0, 10) === today);
-                  const beforeAfterFood = med.time && med.time.includes('Before Food') ? 'Before Food' : med.time && med.time.includes('After Food') ? 'After Food' : '';
+                  const beforeAfterFood = med.time && med.time.includes('Before Food') ? 'Before Food' :
+                    med.time && med.time.includes('After Food') ? 'After Food' : '';
 
                   return (
                     <tr key={med._id}>
                       <td>{med.name}</td>
                       <td>{beforeAfterFood}</td>
                       <td>{takenToday ? 'Yes' : 'No'}</td>
-                      <td className="table-actions">
+                      <td className="caregiver-dashboard__table-actions">
                         <Button
                           variant="outlined"
                           size="small"
                           onClick={() => handleEditMedicine(med)}
-                          className="table-edit-btn"
+                          className="caregiver-dashboard__btn-table-edit"
                         >
                           Edit
                         </Button>
@@ -598,7 +590,7 @@ const CaregiverDashboard = () => {
                           size="small"
                           color="error"
                           onClick={() => handleDeleteMedicine(med._id)}
-                          className="table-delete-btn"
+                          className="caregiver-dashboard__btn-table-delete"
                         >
                           Delete
                         </Button>
@@ -609,13 +601,11 @@ const CaregiverDashboard = () => {
               </tbody>
             </table>
           </Box>
-
           <RecoveryGraph data={recoveryData} />
-
           {/* Modals */}
           <Modal open={modalOpen} onClose={handleCloseModal}>
-            <Box className="modal-box">
-              <Typography variant="h6" gutterBottom className="modal-title">
+            <Box className="caregiver-dashboard__modal-container">
+              <Typography variant="h6" gutterBottom className="caregiver-dashboard__modal-title">
                 {editingMedicineId ? 'Edit Medicine' : 'Add Medicine'}
               </Typography>
               <TextField
@@ -665,13 +655,13 @@ const CaregiverDashboard = () => {
                 margin="normal"
                 size="small"
               />
-              <Box className="modal-actions">
+              <Box className="caregiver-dashboard__modal-actions">
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={handleSaveMedicine}
                   fullWidth
-                  className="modal-save-btn"
+                  className="caregiver-dashboard__btn-modal-save"
                 >
                   Save
                 </Button>
@@ -679,17 +669,16 @@ const CaregiverDashboard = () => {
                   variant="outlined"
                   onClick={handleCloseModal}
                   fullWidth
-                  className="modal-cancel-btn"
+                  className="caregiver-dashboard__btn-modal-cancel"
                 >
                   Cancel
                 </Button>
               </Box>
             </Box>
           </Modal>
-
           <Modal open={contactModalOpen} onClose={handleCloseContactModal}>
-            <Box className="modal-box">
-              <Typography variant="h6" gutterBottom className="modal-title">
+            <Box className="caregiver-dashboard__modal-container">
+              <Typography variant="h6" gutterBottom className="caregiver-dashboard__modal-title">
                 {editingContactId ? 'Edit Emergency Contact' : 'Add Emergency Contact'}
               </Typography>
               <TextField
@@ -733,13 +722,13 @@ const CaregiverDashboard = () => {
                   <MenuItem value="Relative">Relative</MenuItem>
                 </Select>
               </FormControl>
-              <Box className="modal-actions">
+              <Box className="caregiver-dashboard__modal-actions">
                 <Button
                   variant="contained"
                   color="secondary"
                   onClick={handleSaveContact}
                   fullWidth
-                  className="modal-save-btn"
+                  className="caregiver-dashboard__btn-modal-save"
                 >
                   Save
                 </Button>
@@ -747,7 +736,7 @@ const CaregiverDashboard = () => {
                   variant="outlined"
                   onClick={handleCloseContactModal}
                   fullWidth
-                  className="modal-cancel-btn"
+                  className="caregiver-dashboard__btn-modal-cancel"
                 >
                   Cancel
                 </Button>
