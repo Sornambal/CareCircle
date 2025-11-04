@@ -3,6 +3,7 @@ import MedicineCard from '../components/MedicineCard';
 import ReportCard from '../components/ReportCard';
 import RecoveryGraph from '../components/RecoveryGraph';
 import ProfileCard from '../components/ProfileCard';
+import Header from '../components/Header';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import usePWAInstall from '../hooks/usePWAInstall';
 import {
@@ -336,8 +337,10 @@ const CaregiverDashboard = () => {
 
   return (
     <>
+      <Header />
       <Box className="caregiver-dashboard">
         <Box className="caregiver-dashboard__content">
+<<<<<<< HEAD
           {/* Header Section */}
           <AppBar position="static" elevation={0} className="caregiver-dashboard__header">
             <Toolbar className="caregiver-dashboard__header-toolbar">
@@ -355,6 +358,8 @@ const CaregiverDashboard = () => {
             </Toolbar>
           </AppBar>
 
+=======
+>>>>>>> 4e5bb83c7a46f13808871e7900dc6ac1cb32fa95
           <ProfileCard user={user} />
 
           {/* Quick Actions Card */}
