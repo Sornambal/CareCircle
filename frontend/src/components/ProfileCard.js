@@ -22,9 +22,9 @@ const ProfileCard = ({ user }) => {
     <Box
       sx={{
         p: 2,
-        border: '1px solid #ccc',
-        borderRadius: 2,
-        mb: 3,
+        border: '5px solid #f1f1f1ff',
+        borderRadius: 5,
+        mt: 3,
         display: 'flex',
         alignItems: 'center',
         gap: 2,
@@ -35,8 +35,12 @@ const ProfileCard = ({ user }) => {
         {name ? name.charAt(0) : <PersonIcon />}
       </Avatar>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h6">{name}</Typography>
-        <Typography variant="body2">Role: {role}</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          {name}
+        </Typography>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          Role: {role}
+        </Typography>
       </Box>
       <Stack direction="row" spacing={1}>
         {doctorContact && (
