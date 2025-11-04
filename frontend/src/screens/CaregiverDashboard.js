@@ -19,7 +19,7 @@ import {
   Medication, AccessTime, Person, LocalHospital, Favorite
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import './DashboardScreen.css';
+import './CaregiverDashboard.css';
 
 const CaregiverDashboard = () => {
   const { t, i18n } = useTranslation();
@@ -78,12 +78,11 @@ const CaregiverDashboard = () => {
     } catch (e) {
       console.warn('Failed to persist user language preference', e);
     }
-    // Update i18n language immediately
     i18n.changeLanguage(languageMap[newLang] || 'en');
   };
 
   useEffect(() => {
-    i18n.changeLanguage(language); // Set language for i18n
+    i18n.changeLanguage(language);
   }, [language, i18n]);
 
   useEffect(() => {
@@ -355,8 +354,10 @@ const CaregiverDashboard = () => {
               </Box>
             </Toolbar>
           </AppBar>
+
           <ProfileCard user={user} />
-          {/* Caregiver Quick Actions */}
+
+          {/* Quick Actions Card */}
           <Card className="caregiver-dashboard__quick-actions">
             <CardContent className="caregiver-dashboard__quick-actions-content">
               <Typography variant="h6" gutterBottom className="caregiver-dashboard__quick-actions-title">
@@ -385,16 +386,20 @@ const CaregiverDashboard = () => {
               </Box>
             </CardContent>
           </Card>
-          {/* Loading and Error States */}
+
+          {/* Loading State */}
           {loading && (
             <Card className="caregiver-dashboard__loading-state">
               <CircularProgress className="caregiver-dashboard__loading-spinner" />
               <Typography className="caregiver-dashboard__loading-text">{t('loadingHealth')}</Typography>
             </Card>
           )}
+
+          {/* Error State */}
           {error && (
             <Alert severity="error" className="caregiver-dashboard__error-alert">{error}</Alert>
           )}
+
           {/* Current Time Display */}
           <Card className="caregiver-dashboard__time-card">
             <CardContent className="caregiver-dashboard__time-card-content">
@@ -407,6 +412,7 @@ const CaregiverDashboard = () => {
               </Typography>
             </CardContent>
           </Card>
+
           {/* Today's Medications Section */}
           <Card className="caregiver-dashboard__medications">
             <CardContent className="caregiver-dashboard__medications-content">
@@ -459,6 +465,7 @@ const CaregiverDashboard = () => {
               )}
             </CardContent>
           </Card>
+
           {/* Medication Reminder Dialog */}
           <Dialog
             open={reminderDialog.open}
@@ -503,7 +510,8 @@ const CaregiverDashboard = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          {/* Caregiver Sections */}
+
+          {/* Emergency Contacts Section */}
           <Typography variant="h6" gutterBottom className="caregiver-dashboard__section-heading">
             {t('emergencyContacts')}
           </Typography>
@@ -540,6 +548,8 @@ const CaregiverDashboard = () => {
               </Grid>
             ))}
           </Grid>
+
+          {/* Report Section */}
           <Typography variant="h6" gutterBottom className="caregiver-dashboard__section-heading">
             {t('reportTracking')}
           </Typography>
@@ -552,7 +562,9 @@ const CaregiverDashboard = () => {
           >
             {t('downloadReport')}
           </Button>
+
           <ReportCard adherence={calculateAdherence()} />
+
           {/* Medicine Taken Report Table */}
           <Box className="caregiver-dashboard__report-table-wrapper">
             <table className="caregiver-dashboard__report-table">
@@ -601,8 +613,10 @@ const CaregiverDashboard = () => {
               </tbody>
             </table>
           </Box>
+
           <RecoveryGraph data={recoveryData} />
-          {/* Modals */}
+
+          {/* Add Medicine Modal */}
           <Modal open={modalOpen} onClose={handleCloseModal}>
             <Box className="caregiver-dashboard__modal-container">
               <Typography variant="h6" gutterBottom className="caregiver-dashboard__modal-title">
@@ -676,6 +690,8 @@ const CaregiverDashboard = () => {
               </Box>
             </Box>
           </Modal>
+
+          {/* Add Emergency Contact Modal */}
           <Modal open={contactModalOpen} onClose={handleCloseContactModal}>
             <Box className="caregiver-dashboard__modal-container">
               <Typography variant="h6" gutterBottom className="caregiver-dashboard__modal-title">
