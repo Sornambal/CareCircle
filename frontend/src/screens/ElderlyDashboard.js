@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import MedicineCard from '../components/MedicineCard';
 import SOSButton from '../components/SOSButton';
+import Header from '../components/Header';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import usePWAInstall from '../hooks/usePWAInstall';
 import { getTodaysMedicines, markMedicineTaken } from '../utils/api';
@@ -132,36 +133,19 @@ const ElderlyDashboard = () => {
 
   return (
     <>
+      <Header />
       <Box className="dashboard-container">
         <Box className="dashboard-content">
-          {/* Header Section */}
-          <AppBar position="static" elevation={0} className="dashboard-header">
-            <Toolbar className="header-toolbar">
-              <Box className="header-logo">
-                <Favorite className="logo-icon" />
-                <Box className="logo-text">
-                  <Typography variant="h5" component="div" className="logo-title">
-                    {t('careCircle')}
-                  </Typography>
-                  <Typography variant="body2" className="logo-subtitle">
-                    {t('yourHealthCompanion')}
-                  </Typography>
-                </Box>
-              </Box>
-
-
-
-              <Box className="sos-section">
-                <Typography variant="body2" className="sos-text">
-                  {t('needHelpText')}
-                </Typography>
-                <Box className="sos-buttons">
-                  <SOSButton type="all" user={user} />
-                  <SOSButton type="relatives" user={user} />
-                </Box>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          {/* SOS Section */}
+          <Box className="sos-section">
+            <Typography variant="body2" className="sos-text">
+              {t('needHelpText')}
+            </Typography>
+            <Box className="sos-buttons">
+              <SOSButton type="all" user={user} />
+              <SOSButton type="relatives" user={user} />
+            </Box>
+          </Box>
 
           {/* Welcome Section for Elderly */}
           <Card className="welcome-card">
@@ -232,7 +216,7 @@ const ElderlyDashboard = () => {
                               onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
                               className="taken-btn"
                             >
-                              ✅ {t('takenIt')}
+                               {t('takenIt')}
                             </Button>
                           </Box>
                         </CardContent>

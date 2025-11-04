@@ -1,8 +1,8 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 import RegistrationScreen from './screens/RegistrationScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -52,56 +52,16 @@ const theme = createTheme({
   },
 });
 
-const Navigation = ({ sosNotification, onSOSClose }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [user, setUser] = useState(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      return storedUser ? JSON.parse(storedUser) : null;
-    } catch (e) {
-      console.error('Error parsing user data:', e);
-      return null;
-    }
-  });
-
-  if (!user || location.pathname === '/' || location.pathname === '/login') {
-    return null;
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/login');
-  };
-
-  return (
-    <AppBar position="static" color="primary">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {i18n.t('careCircle')}
-        </Typography>
-
-        <Button color="inherit" onClick={handleLogout}>
-          {i18n.t('logout')}
-        </Button>
-      </Toolbar>
-      {/* SOS Notification Component */}
-      <SOSNotification notification={sosNotification} onClose={onSOSClose} />
-    </AppBar>
-  );
-};
-
 const AppLayout = ({ sosNotification, onSOSClose, children }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navigation sosNotification={sosNotification} onSOSClose={onSOSClose} />
       <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>}>
           <Outlet />
         </Suspense>
       </Box>
+      {/* SOS Notification Component */}
+      <SOSNotification notification={sosNotification} onClose={onSOSClose} />
     </Box>
   );
 };

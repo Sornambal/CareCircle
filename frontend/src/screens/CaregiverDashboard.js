@@ -3,6 +3,7 @@ import MedicineCard from '../components/MedicineCard';
 import ReportCard from '../components/ReportCard';
 import RecoveryGraph from '../components/RecoveryGraph';
 import ProfileCard from '../components/ProfileCard';
+import Header from '../components/Header';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import usePWAInstall from '../hooks/usePWAInstall';
 import {
@@ -19,7 +20,7 @@ import {
   Medication, AccessTime, Person, LocalHospital, Favorite
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import './DashboardScreen.css';
+import './CaregiverDashboard.css';
 
 const CaregiverDashboard = () => {
   const { t, i18n } = useTranslation();
@@ -337,24 +338,9 @@ const CaregiverDashboard = () => {
 
   return (
     <>
+      <Header />
       <Box className="caregiver-dashboard">
         <Box className="caregiver-dashboard__content">
-          {/* Header Section */}
-          <AppBar position="static" elevation={0} className="caregiver-dashboard__header">
-            <Toolbar className="caregiver-dashboard__header-toolbar">
-              <Box className="caregiver-dashboard__logo">
-                <Favorite className="caregiver-dashboard__logo-icon" />
-                <Box className="caregiver-dashboard__logo-text">
-                  <Typography variant="h5" component="div" className="caregiver-dashboard__logo-title">
-                    {t('careCircle')}
-                  </Typography>
-                  <Typography variant="body2" className="caregiver-dashboard__logo-subtitle">
-                    {t('yourHealthCompanion')}
-                  </Typography>
-                </Box>
-              </Box>
-            </Toolbar>
-          </AppBar>
           <ProfileCard user={user} />
           {/* Caregiver Quick Actions */}
           <Card className="caregiver-dashboard__quick-actions">
