@@ -18,23 +18,46 @@ const MedicineCard = ({ medicine, onMarkTaken }) => {
         </Box>
         {medicine.scheduledTimes && medicine.scheduledTimes.length > 0 && (
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1 }}><strong>Scheduled Times:</strong></Typography>
+            <Typography variant="body2" sx={{ mb: 1.5, fontWeight: 600 }}><strong>Scheduled Times:</strong></Typography>
             {medicine.scheduledTimes.map((scheduled, index) => (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="body2" sx={{ mr: 1 }}>{scheduled.time}</Typography>
+              <Box 
+                key={index} 
+                sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: 1.5,
+                  mb: 2,
+                  p: 1.5,
+                  backgroundColor: scheduled.status === 'taken' ? '#e8f5e9' : '#fff3e0',
+                  borderRadius: 2,
+                  border: `1px solid ${scheduled.status === 'taken' ? '#c8e6c9' : '#ffe0b2'}`
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
+                    {scheduled.time}
+                  </Typography>
                   <Chip
                     label={scheduled.status === 'taken' ? 'Taken' : 'Pending'}
                     color={scheduled.status === 'taken' ? 'success' : 'warning'}
                     size="small"
+                    sx={{ fontWeight: 500 }}
                   />
                 </Box>
                 {scheduled.status === 'pending' && onMarkTaken && (
                   <Button
                     variant="contained"
                     color="primary"
-                    size="small"
+                    size="medium"
                     onClick={() => onMarkTaken(medicine._id, scheduled.time)}
+                    sx={{ 
+                      textTransform: 'none',
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      py: 1,
+                      boxShadow: 2
+                    }}
+                    fullWidth
                   >
                     Mark as Taken
                   </Button>
