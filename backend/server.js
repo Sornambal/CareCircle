@@ -37,12 +37,16 @@ app.use(express.json());
 // Parse application/x-www-form-urlencoded (Twilio sends callbacks as form data)
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Connect to MongoDB if a connection string is provided. If not, warn and continue
+if (process.env.MONGO_URI) {
+  mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => console.log('MongoDB connected'))
+    .catch((err) => console.error('MongoDB connection error:', err));
+} else {
+  console.warn('MONGO_URI not set. Skipping MongoDB connection. Routes requiring a database will fail until configured.');
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
