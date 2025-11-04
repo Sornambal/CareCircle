@@ -357,37 +357,60 @@ const CaregiverDashboard = () => {
             </Toolbar>
           </AppBar>
 
-          <ProfileCard user={user} />
-
-          {/* Quick Actions Card */}
-          <Card className="caregiver-dashboard__quick-actions">
-            <CardContent className="caregiver-dashboard__quick-actions-content">
-              <Typography variant="h6" gutterBottom className="caregiver-dashboard__quick-actions-title">
-                <Person className="caregiver-dashboard__section-icon" />
-                {t('quickActions')}
-              </Typography>
-              <Box className="caregiver-dashboard__quick-actions-buttons">
-                <Button
-                  variant="contained"
-                  startIcon={<Medication />}
-                  onClick={handleOpenModal}
-                  className="caregiver-dashboard__btn-add-medicine"
-                  fullWidth
-                >
-                  {t('addMedicine')}
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<LocalHospital />}
-                  onClick={() => setContactModalOpen(true)}
-                  className="caregiver-dashboard__btn-add-contact"
-                  fullWidth
-                >
-                  {t('addEmergencyContact')}
-                </Button>
+          {/* Profile and Quick Actions Row */}
+          <Grid container spacing={2} sx={{ marginBottom: '16px' }}>
+            {/* Profile Card and Time Card Column */}
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
+                <ProfileCard user={user} />
+                
+                {/* Current Time Display */}
+                <Card className="caregiver-dashboard__time-card" sx={{ flex: 1 }}>
+                  <CardContent className="caregiver-dashboard__time-card-content">
+                    <AccessTime className="caregiver-dashboard__time-icon" />
+                    <Typography variant="h3" className="caregiver-dashboard__time-value">
+                      {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </Typography>
+                    <Typography variant="h6" className="caregiver-dashboard__date-value">
+                      {currentTime.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Box>
-            </CardContent>
-          </Card>
+            </Grid>
+
+            {/* Quick Actions Card */}
+            <Grid item xs={12} md={6}>
+              <Card className="caregiver-dashboard__quick-actions">
+                <CardContent className="caregiver-dashboard__quick-actions-content">
+                  <Typography variant="h6" gutterBottom className="caregiver-dashboard__quick-actions-title">
+                    <Person className="caregiver-dashboard__section-icon" />
+                    {t('quickActions')}
+                  </Typography>
+                  <Box className="caregiver-dashboard__quick-actions-buttons">
+                    <Button
+                      variant="contained"
+                      startIcon={<Medication />}
+                      onClick={handleOpenModal}
+                      className="caregiver-dashboard__btn-add-medicine"
+                      fullWidth
+                    >
+                      {t('addMedicine')}
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<LocalHospital />}
+                      onClick={() => setContactModalOpen(true)}
+                      className="caregiver-dashboard__btn-add-contact"
+                      fullWidth
+                    >
+                      {t('addEmergencyContact')}
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
 
           {/* Loading State */}
           {loading && (
@@ -401,19 +424,6 @@ const CaregiverDashboard = () => {
           {error && (
             <Alert severity="error" className="caregiver-dashboard__error-alert">{error}</Alert>
           )}
-
-          {/* Current Time Display */}
-          <Card className="caregiver-dashboard__time-card">
-            <CardContent className="caregiver-dashboard__time-card-content">
-              <AccessTime className="caregiver-dashboard__time-icon" />
-              <Typography variant="h3" className="caregiver-dashboard__time-value">
-                {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Typography>
-              <Typography variant="h6" className="caregiver-dashboard__date-value">
-                {currentTime.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </Typography>
-            </CardContent>
-          </Card>
 
           {/* Today's Medications Section */}
           <Card className="caregiver-dashboard__medications">
