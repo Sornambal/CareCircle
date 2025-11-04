@@ -237,7 +237,7 @@
 }
 
 .caregiver-dashboard__medications-content {
-  padding: 16px !important;
+  padding: 24px !important;
 }
 
 .caregiver-dashboard__medications-title {
@@ -246,8 +246,27 @@
   gap: 8px;
   color: #333 !important;
   font-weight: 600 !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 24px !important;
   font-size: 1.125rem !important;
+}
+
+/* Grid container wrapper for medications */
+.caregiver-dashboard__medications-grid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* When only 1 item, center it */
+.caregiver-dashboard__medications-grid[data-count="1"] {
+  justify-content: center;
+}
+
+/* When 2+ items, align to flex-start (left) */
+.caregiver-dashboard__medications-grid[data-count="2"],
+.caregiver-dashboard__medications-grid[data-count="3"],
+.caregiver-dashboard__medications-grid[data-count="many"] {
+  justify-content: flex-start;
 }
 
 .caregiver-dashboard__medicine-card {
@@ -255,6 +274,7 @@
   border-radius: 16px !important;
   transition: all 0.3s ease !important;
   height: 100%;
+  min-height: 320px;
 }
 
 .caregiver-dashboard__medicine-card:hover {
@@ -264,21 +284,24 @@
 }
 
 .caregiver-dashboard__medicine-card-content {
-  padding: 16px !important;
+  padding: 20px !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .caregiver-dashboard__medicine-actions {
-  margin-top: 16px;
+  margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid #e0e0e0;
   display: flex;
-  gap: 8px;
+  gap: 12px;
   flex-direction: column;
 }
 
 .caregiver-dashboard__medicine-edit-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .caregiver-dashboard__btn-medicine-edit,
@@ -286,8 +309,9 @@
   flex: 1;
   text-transform: none !important;
   font-weight: 500 !important;
-  border-radius: 16px !important;
-  font-size: 0.75rem !important;
+  border-radius: 12px !important;
+  font-size: 0.875rem !important;
+  padding: 10px 16px !important;
 }
 
 .caregiver-dashboard__no-medications {
