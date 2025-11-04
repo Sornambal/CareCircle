@@ -433,9 +433,24 @@ const CaregiverDashboard = () => {
                 {t('todaysMedications')}
               </Typography>
               {todaysMedicines.length > 0 ? (
-                <Grid container spacing={{ xs: 2, sm: 3 }}>
+                <Grid 
+                  container 
+                  spacing={{ xs: 2, sm: 3 }}
+                  className="caregiver-dashboard__medications-grid"
+                  data-count={todaysMedicines.length === 1 ? "1" : todaysMedicines.length === 2 ? "2" : todaysMedicines.length === 3 ? "3" : "many"}
+                  sx={{
+                    justifyContent: todaysMedicines.length === 1 ? 'center' : 'flex-start'
+                  }}
+                >
                   {todaysMedicines.map((med) => (
-                    <Grid item xs={12} sm={6} md={4} key={med._id}>
+                    <Grid 
+                      item 
+                      xs={12} 
+                      sm={todaysMedicines.length === 1 ? 8 : 6} 
+                      md={todaysMedicines.length === 1 ? 6 : 4} 
+                      lg={todaysMedicines.length === 1 ? 4 : 4}
+                      key={med._id}
+                    >
                       <Card variant="outlined" className="caregiver-dashboard__medicine-card">
                         <CardContent className="caregiver-dashboard__medicine-card-content">
                           <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
