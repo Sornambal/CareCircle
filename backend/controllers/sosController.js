@@ -1,13 +1,9 @@
 const User = require('../models/User');
 const EmergencyContact = require('../models/EmergencyContact');
-const twilio = require('twilio');
-
-// Twilio configuration (add to environment variables)
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+// Use the shared twilio client util which lazy-initializes based on env vars
+const client = require('../utils/twilioClient');
+// Read the configured Twilio phone number (may be undefined)
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
-
-const client = new twilio(accountSid, authToken);
 
 // @desc    Trigger SOS
 // @route   POST /api/sos/alert
@@ -57,6 +53,11 @@ const triggerSOS = async (req, res) => {
 
         const messageBody = smsMessages[userPreferredLanguage] || smsMessages.English;
 
+        if (!client || !twilioPhoneNumber) {
+          console.warn('Twilio not configured - skipping SMS to', contact.phone);
+          return { contact: contact.name, status: 'skipped', reason: 'twilio_not_configured' };
+        }
+
         const message = await client.messages.create({
           body: messageBody,
           from: twilioPhoneNumber,
@@ -95,6 +96,11 @@ const triggerSOS = async (req, res) => {
 
           // Create TwiML for voice call
           const twiml = `<Response><Say voice="alice" language="${userPreferredLanguage === 'Tamil' ? 'ta-IN' : userPreferredLanguage === 'Hindi' ? 'hi-IN' : userPreferredLanguage === 'Malayalam' ? 'ml-IN' : 'en-IN'}">${voiceMessage}</Say></Response>`;
+
+          if (!client || !twilioPhoneNumber) {
+            console.warn('Twilio not configured - skipping voice call to', contact.phone);
+            return { contact: contact.name, status: 'skipped', reason: 'twilio_not_configured' };
+          }
 
           const call = await client.calls.create({
             twiml: twiml,
