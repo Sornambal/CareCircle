@@ -4,15 +4,15 @@
 
 .caregiver-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 0;
+  background: #F7F9FA;
+  padding: 16px 0;
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
 }
 
 .caregiver-dashboard__content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 16px;
 }
 
 /* ============================================
@@ -22,40 +22,48 @@
 .caregiver-dashboard__header {
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(10px);
-  border-radius: 12px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  margin-bottom: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .caregiver-dashboard__header-toolbar {
-  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 16px;
 }
 
 .caregiver-dashboard__logo {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
 }
 
 .caregiver-dashboard__logo-icon {
-  font-size: 48px !important;
+  font-size: 28px !important;
   color: #e91e63;
 }
 
 .caregiver-dashboard__logo-text {
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .caregiver-dashboard__logo-title {
   font-weight: 700 !important;
   color: #667eea;
   line-height: 1.2;
+  font-size: 1.25rem !important;
 }
 
 .caregiver-dashboard__logo-subtitle {
   color: #666;
-  font-size: 14px;
+  font-size: 0.75rem;
 }
 
 /* ============================================
@@ -63,43 +71,49 @@
    ============================================ */
 
 .caregiver-dashboard__quick-actions {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
   border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  margin-bottom: 16px;
 }
 
 .caregiver-dashboard__quick-actions-content {
-  padding: 24px !important;
+  padding: 16px !important;
 }
 
 .caregiver-dashboard__quick-actions-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: white !important;
+  gap: 8px;
+  color: #2c3e50 !important;
   font-weight: 600 !important;
-  margin-bottom: 20px !important;
+  margin-bottom: 16px !important;
+  font-size: 1rem !important;
 }
 
 .caregiver-dashboard__section-icon {
-  font-size: 28px !important;
+  font-size: 24px !important;
+  color: #2196f3 !important;
 }
 
 .caregiver-dashboard__quick-actions-buttons {
   display: flex;
-  gap: 16px;
+  gap: 8px;
+  flex-direction: column;
   flex-wrap: wrap;
 }
 
 .caregiver-dashboard__btn-add-medicine {
-  background: white !important;
-  color: #667eea !important;
+  background: linear-gradient(45deg, #4CAF50 30%, #66BB6A 90%) !important;
+  color: white !important;
   font-weight: 600 !important;
-  padding: 12px 24px !important;
-  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 16px !important;
   text-transform: none !important;
   transition: all 0.3s ease !important;
+  font-size: 0.875rem !important;
+  box-shadow: 0 3px 5px 2px rgba(76, 175, 80, .3) !important;
 }
 
 .caregiver-dashboard__btn-add-medicine:hover {
@@ -109,18 +123,19 @@
 
 .caregiver-dashboard__btn-add-contact {
   background: transparent !important;
-  color: white !important;
-  border: 2px solid white !important;
+  color: #2196f3 !important;
+  border: 2px solid #2196f3 !important;
   font-weight: 600 !important;
-  padding: 12px 24px !important;
-  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 16px !important;
   text-transform: none !important;
   transition: all 0.3s ease !important;
+  font-size: 0.875rem !important;
 }
 
 .caregiver-dashboard__btn-add-contact:hover {
-  background: white !important;
-  color: #764ba2 !important;
+  background: #2196f3 !important;
+  color: white !important;
   transform: translateY(-2px);
 }
 
@@ -133,10 +148,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px !important;
+  padding: 24px !important;
   background: white !important;
   border-radius: 16px !important;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .caregiver-dashboard__loading-spinner {
@@ -146,12 +161,13 @@
 
 .caregiver-dashboard__loading-text {
   color: #666;
-  font-size: 16px;
+  font-size: 0.875rem;
 }
 
 .caregiver-dashboard__error-alert {
-  margin-bottom: 24px;
-  border-radius: 12px !important;
+  margin-bottom: 16px;
+  border-radius: 16px !important;
+  font-size: 0.875rem !important;
 }
 
 /* ============================================
@@ -159,34 +175,39 @@
    ============================================ */
 
 .caregiver-dashboard__time-card {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
   border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
-  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .caregiver-dashboard__time-card-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px !important;
-  color: white;
+  padding: 16px !important;
+  color: inherit;
 }
 
 .caregiver-dashboard__time-icon {
-  font-size: 48px !important;
-  margin-bottom: 16px;
+  font-size: 36px !important;
+  color: #ff9800 !important;
+  margin-bottom: 8px;
 }
 
 .caregiver-dashboard__time-value {
   font-weight: 700 !important;
-  font-size: 3rem !important;
+  font-size: 1.75rem !important;
   margin-bottom: 8px !important;
+  color: #2c3e50 !important;
 }
 
 .caregiver-dashboard__date-value {
-  font-size: 1.1rem !important;
-  opacity: 0.9;
+  font-size: 0.875rem !important;
+  opacity: 1;
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 
 /* ============================================
@@ -197,25 +218,26 @@
   background: white !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .caregiver-dashboard__medications-content {
-  padding: 24px !important;
+  padding: 16px !important;
 }
 
 .caregiver-dashboard__medications-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: #333 !important;
   font-weight: 600 !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 16px !important;
+  font-size: 1.125rem !important;
 }
 
 .caregiver-dashboard__medicine-card {
   border: 2px solid #e0e0e0 !important;
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   transition: all 0.3s ease !important;
   height: 100%;
 }
@@ -227,13 +249,16 @@
 }
 
 .caregiver-dashboard__medicine-card-content {
-  padding: 20px !important;
+  padding: 16px !important;
 }
 
 .caregiver-dashboard__medicine-actions {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
 }
 
 .caregiver-dashboard__medicine-edit-actions {
@@ -246,23 +271,28 @@
   flex: 1;
   text-transform: none !important;
   font-weight: 500 !important;
+  border-radius: 16px !important;
+  font-size: 0.75rem !important;
 }
 
 .caregiver-dashboard__no-medications {
   text-align: center;
-  padding: 48px 24px;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-  border-radius: 12px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
 }
 
 .caregiver-dashboard__no-medications-title {
-  color: #ff6b6b;
+  color: rgba(0, 0, 0, 0.6) !important;
   font-weight: 600 !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 16px !important;
+  font-size: 1rem !important;
 }
 
 .caregiver-dashboard__no-medications-text {
-  color: #666;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem !important;
 }
 
 /* ============================================
@@ -272,45 +302,53 @@
 .caregiver-dashboard__reminder-modal .MuiDialog-paper {
   border-radius: 16px !important;
   padding: 8px;
+  margin: 16px;
+  max-width: calc(100% - 32px);
 }
 
 .caregiver-dashboard__reminder-modal-title {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white !important;
+  background: rgba(33, 150, 243, 0.1);
+  color: #2196f3 !important;
   font-weight: 600 !important;
-  padding: 20px 24px !important;
+  padding: 16px 20px !important;
   border-radius: 12px 12px 0 0;
+  font-size: 1.125rem !important;
 }
 
 .caregiver-dashboard__reminder-medicine-name {
   font-weight: 600 !important;
   color: #333;
   margin-bottom: 12px !important;
+  font-size: 1rem !important;
 }
 
 .caregiver-dashboard__reminder-dosage {
   color: #666;
   margin-bottom: 8px !important;
+  font-size: 0.875rem !important;
 }
 
 .caregiver-dashboard__reminder-time {
   color: #999;
   margin-bottom: 16px !important;
+  font-size: 0.75rem !important;
 }
 
 .caregiver-dashboard__test-notification-btn {
   margin-top: 16px !important;
   text-transform: none !important;
+  font-size: 0.875rem !important;
 }
 
 .caregiver-dashboard__reminder-actions {
-  padding: 16px 24px !important;
+  padding: 16px !important;
 }
 
 .caregiver-dashboard__reminder-taken-btn {
   text-transform: none !important;
   font-weight: 600 !important;
-  padding: 12px !important;
+  padding: 10px 20px !important;
+  font-size: 1rem !important;
 }
 
 /* ============================================
@@ -318,26 +356,33 @@
    ============================================ */
 
 .caregiver-dashboard__section-heading {
-  color: white !important;
+  color: #2c3e50 !important;
   font-weight: 600 !important;
-  margin: 32px 0 16px !important;
-  font-size: 1.25rem !important;
+  margin: 24px 0 16px !important;
+  font-size: 1rem !important;
+  padding: 0;
 }
 
 /* ============================================
    EMERGENCY CONTACTS
    ============================================ */
 
+.caregiver-dashboard__btn-add-contact-main {
+  margin-bottom: 16px !important;
+  font-size: 0.875rem !important;
+}
+
 .caregiver-dashboard__contacts-grid {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .caregiver-dashboard__contact-card {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  border: 1px solid #ddd;
 }
 
 .caregiver-dashboard__contact-card:hover {
@@ -346,27 +391,30 @@
 }
 
 .caregiver-dashboard__contact-name {
-  color: #667eea !important;
+  color: #2196f3 !important;
   font-weight: 600 !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 8px !important;
+  font-size: 1rem !important;
 }
 
 .caregiver-dashboard__contact-info {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 6px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+  margin-bottom: 4px;
 }
 
 .caregiver-dashboard__contact-actions {
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 8px;
+  flex-direction: column;
 }
 
 .caregiver-dashboard__btn-contact-edit,
 .caregiver-dashboard__btn-contact-delete {
   text-transform: none !important;
   font-weight: 500 !important;
+  font-size: 0.75rem !important;
 }
 
 /* ============================================
@@ -374,18 +422,18 @@
    ============================================ */
 
 .caregiver-dashboard__btn-download-report {
-  margin-bottom: 24px !important;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+  margin-bottom: 16px !important;
+  background: #2196f3 !important;
   color: white !important;
   font-weight: 600 !important;
-  padding: 14px !important;
-  border-radius: 12px !important;
+  padding: 12px !important;
+  border-radius: 16px !important;
   text-transform: none !important;
-  font-size: 16px !important;
+  font-size: 0.875rem !important;
 }
 
 .caregiver-dashboard__btn-download-report:hover {
-  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4) !important;
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4) !important;
   transform: translateY(-2px);
 }
 
@@ -396,10 +444,11 @@
 .caregiver-dashboard__report-table-wrapper {
   background: white;
   border-radius: 16px;
-  padding: 24px;
-  margin: 24px 0;
+  padding: 16px;
+  margin: 16px 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .caregiver-dashboard__report-table {
@@ -409,23 +458,25 @@
 }
 
 .caregiver-dashboard__report-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2196f3;
   color: white;
 }
 
 .caregiver-dashboard__report-table th {
-  padding: 16px;
+  padding: 8px;
   text-align: left;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px solid #ddd;
 }
 
 .caregiver-dashboard__report-table td {
-  padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 8px;
+  border: 1px solid #ddd;
   color: #333;
+  font-size: 0.875rem;
 }
 
 .caregiver-dashboard__report-table tbody tr:hover {
@@ -434,7 +485,8 @@
 
 .caregiver-dashboard__table-actions {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .caregiver-dashboard__btn-table-edit,
@@ -442,6 +494,7 @@
   text-transform: none !important;
   font-weight: 500 !important;
   padding: 6px 16px !important;
+  font-size: 0.75rem !important;
 }
 
 /* ============================================
@@ -454,55 +507,138 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 32px;
+  padding: 24px;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
   width: 90%;
+  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 .caregiver-dashboard__modal-title {
-  color: #667eea !important;
+  color: #2c3e50 !important;
   font-weight: 600 !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 16px !important;
+  font-size: 1.125rem !important;
 }
 
 .caregiver-dashboard__modal-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: space-between;
 }
 
 .caregiver-dashboard__btn-modal-save {
   text-transform: none !important;
   font-weight: 600 !important;
   padding: 12px !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 8px;
 }
 
 .caregiver-dashboard__btn-modal-cancel {
   text-transform: none !important;
   font-weight: 500 !important;
   padding: 12px !important;
+  font-size: 0.875rem !important;
 }
 
 /* ============================================
-   RESPONSIVE DESIGN - TABLET
+   RESPONSIVE DESIGN - TABLET (min-width: 600px)
    ============================================ */
 
-@media (max-width: 960px) {
-  .caregiver-dashboard__content {
-    padding: 16px;
+@media (min-width: 600px) {
+  .caregiver-dashboard {
+    padding: 24px 0;
   }
 
-  .caregiver-dashboard__quick-actions-buttons {
-    flex-direction: column;
+  .caregiver-dashboard__content {
+    padding: 0 24px;
+  }
+
+  .caregiver-dashboard__header {
+    margin-bottom: 24px;
+    border-radius: 24px;
+  }
+
+  .caregiver-dashboard__header-toolbar {
+    flex-direction: row;
+    padding: 8px 16px;
+    gap: 0;
+  }
+
+  .caregiver-dashboard__logo {
+    width: auto;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .caregiver-dashboard__logo-icon {
+    font-size: 32px !important;
+  }
+
+  .caregiver-dashboard__logo-text {
+    text-align: left;
+  }
+
+  .caregiver-dashboard__logo-title {
+    font-size: 1.5rem !important;
+  }
+
+  .caregiver-dashboard__logo-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .caregiver-dashboard__quick-actions,
+  .caregiver-dashboard__loading-state,
+  .caregiver-dashboard__time-card,
+  .caregiver-dashboard__medications {
+    margin-bottom: 24px;
+  }
+
+  .caregiver-dashboard__quick-actions-content {
+    padding: 24px !important;
+  }
+
+  .caregiver-dashboard__quick-actions-title {
+    font-size: 1.25rem !important;
+  }
+
+.caregiver-dashboard__section-icon {
+  font-size: 28px !important;
+  color: #2196f3 !important;
+}  .caregiver-dashboard__quick-actions-buttons {
+    flex-direction: row;
   }
 
   .caregiver-dashboard__btn-add-medicine,
   .caregiver-dashboard__btn-add-contact {
-    width: 100%;
+    padding: 8px 16px !important;
+    font-size: 1rem !important;
+    max-width: fit-content;
+  }
+
+  .caregiver-dashboard__loading-state {
+    padding: 32px !important;
+  }
+
+  .caregiver-dashboard__loading-text {
+    font-size: 1rem;
+  }
+
+  .caregiver-dashboard__error-alert {
+    font-size: 1rem !important;
+  }
+
+  .caregiver-dashboard__time-card-content {
+    padding: 24px !important;
+  }
+
+  .caregiver-dashboard__time-icon {
+    font-size: 48px !important;
   }
 
   .caregiver-dashboard__time-value {
@@ -513,263 +649,157 @@
     font-size: 1rem !important;
   }
 
-  .caregiver-dashboard__report-table-wrapper {
-    padding: 16px;
-  }
-}
-
-/* ============================================
-   RESPONSIVE DESIGN - MOBILE
-   ============================================ */
-
-@media (max-width: 600px) {
-  .caregiver-dashboard__content {
-    padding: 12px;
-  }
-
-  .caregiver-dashboard__header-toolbar {
-    padding: 12px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .caregiver-dashboard__logo {
-    gap: 12px;
-  }
-
-  .caregiver-dashboard__logo-icon {
-    font-size: 36px !important;
-  }
-
-  .caregiver-dashboard__logo-title {
-    font-size: 1.5rem !important;
-  }
-
-  .caregiver-dashboard__logo-subtitle {
-    font-size: 12px;
-  }
-
-  .caregiver-dashboard__quick-actions-content {
-    padding: 16px !important;
-  }
-
-  .caregiver-dashboard__quick-actions-title {
-    font-size: 1rem !important;
-  }
-
-  .caregiver-dashboard__section-icon {
-    font-size: 24px !important;
-  }
-
-  .caregiver-dashboard__quick-actions-buttons {
-    gap: 12px;
-  }
-
-  .caregiver-dashboard__btn-add-medicine,
-  .caregiver-dashboard__btn-add-contact {
-    padding: 10px 20px !important;
-    font-size: 14px !important;
-  }
-
-  .caregiver-dashboard__time-card-content {
-    padding: 24px 16px !important;
-  }
-
-  .caregiver-dashboard__time-icon {
-    font-size: 36px !important;
-  }
-
-  .caregiver-dashboard__time-value {
-    font-size: 2rem !important;
-  }
-
-  .caregiver-dashboard__date-value {
-    font-size: 0.9rem !important;
-    text-align: center;
-  }
-
   .caregiver-dashboard__medications-content {
-    padding: 16px !important;
+    padding: 24px !important;
   }
 
   .caregiver-dashboard__medications-title {
-    font-size: 1.1rem !important;
-  }
-
-  .caregiver-dashboard__medicine-card-content {
-    padding: 16px !important;
-  }
-
-  .caregiver-dashboard__medicine-edit-actions {
-    flex-direction: column;
+    font-size: 1.5rem !important;
+    margin-bottom: 24px !important;
   }
 
   .caregiver-dashboard__btn-medicine-edit,
   .caregiver-dashboard__btn-medicine-delete {
-    width: 100%;
+    font-size: 0.875rem !important;
   }
 
   .caregiver-dashboard__no-medications {
-    padding: 32px 16px;
+    padding: 32px;
   }
 
   .caregiver-dashboard__no-medications-title {
-    font-size: 1.1rem !important;
+    font-size: 1.25rem !important;
   }
 
   .caregiver-dashboard__no-medications-text {
-    font-size: 14px;
+    font-size: 1rem !important;
+  }
+
+  .caregiver-dashboard__reminder-modal .MuiDialog-paper {
+    margin: 24px;
+    max-width: 600px;
+  }
+
+  .caregiver-dashboard__reminder-modal-title {
+    font-size: 1.5rem !important;
+  }
+
+  .caregiver-dashboard__reminder-medicine-name {
+    font-size: 1.25rem !important;
+  }
+
+  .caregiver-dashboard__reminder-dosage {
+    font-size: 1rem !important;
+  }
+
+  .caregiver-dashboard__reminder-time {
+    font-size: 0.875rem !important;
+  }
+
+  .caregiver-dashboard__test-notification-btn {
+    font-size: 1rem !important;
+  }
+
+  .caregiver-dashboard__reminder-actions {
+    padding: 24px !important;
+  }
+
+  .caregiver-dashboard__reminder-taken-btn {
+    font-size: 1.2rem !important;
+    padding: 12px 24px !important;
   }
 
   .caregiver-dashboard__section-heading {
-    font-size: 1.1rem !important;
-    margin: 24px 0 12px !important;
+    font-size: 1.25rem !important;
   }
 
-  .caregiver-dashboard__contact-card {
-    padding: 16px;
+  .caregiver-dashboard__btn-add-contact-main {
+    max-width: fit-content;
+    font-size: 1rem !important;
   }
 
   .caregiver-dashboard__contact-name {
-    font-size: 1.1rem !important;
+    font-size: 1.25rem !important;
   }
 
   .caregiver-dashboard__contact-info {
-    font-size: 13px;
+    font-size: 1rem;
   }
 
   .caregiver-dashboard__contact-actions {
-    flex-direction: column;
+    flex-direction: row;
   }
 
   .caregiver-dashboard__btn-contact-edit,
   .caregiver-dashboard__btn-contact-delete {
-    width: 100%;
+    font-size: 0.875rem !important;
   }
 
   .caregiver-dashboard__btn-download-report {
-    padding: 12px !important;
-    font-size: 14px !important;
+    max-width: fit-content;
+    font-size: 1rem !important;
   }
 
   .caregiver-dashboard__report-table-wrapper {
-    padding: 12px;
-    margin: 16px 0;
-  }
-
-  .caregiver-dashboard__report-table {
-    font-size: 12px;
-  }
-
-  .caregiver-dashboard__report-table th,
-  .caregiver-dashboard__report-table td {
-    padding: 10px 8px;
-  }
-
-  .caregiver-dashboard__table-actions {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .caregiver-dashboard__btn-table-edit,
-  .caregiver-dashboard__btn-table-delete {
-    width: 100%;
-    font-size: 12px !important;
-    padding: 6px 12px !important;
+    padding: 24px;
   }
 
   .caregiver-dashboard__modal-container {
-    padding: 20px;
-    width: 95%;
-    max-height: 85vh;
+    width: 400px;
+    max-height: auto;
+    padding: 32px;
   }
 
   .caregiver-dashboard__modal-title {
-    font-size: 1.2rem !important;
-    margin-bottom: 16px !important;
+    font-size: 1.5rem !important;
   }
 
   .caregiver-dashboard__modal-actions {
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    gap: 0;
   }
 
-  .caregiver-dashboard__btn-modal-save,
+  .caregiver-dashboard__btn-modal-save {
+    margin-bottom: 0;
+    font-size: 1rem !important;
+  }
+
   .caregiver-dashboard__btn-modal-cancel {
-    width: 100%;
-    padding: 10px !important;
-  }
-
-  .caregiver-dashboard__reminder-modal-title {
-    font-size: 1.1rem !important;
-    padding: 16px 20px !important;
-  }
-
-  .caregiver-dashboard__reminder-medicine-name {
-    font-size: 1.1rem !important;
-  }
-
-  .caregiver-dashboard__reminder-dosage,
-  .caregiver-dashboard__reminder-time {
-    font-size: 14px;
+    font-size: 1rem !important;
   }
 }
 
 /* ============================================
-   RESPONSIVE DESIGN - SMALL MOBILE
+   RESPONSIVE DESIGN - DESKTOP (min-width: 960px)
    ============================================ */
 
-@media (max-width: 400px) {
-  .caregiver-dashboard__content {
-    padding: 8px;
+@media (min-width: 960px) {
+  .caregiver-dashboard {
+    padding: 32px 0;
+  }
+
+  .caregiver-dashboard__header {
+    margin-bottom: 32px;
+  }
+
+  .caregiver-dashboard__quick-actions,
+  .caregiver-dashboard__loading-state,
+  .caregiver-dashboard__time-card,
+  .caregiver-dashboard__medications {
+    margin-bottom: 32px;
+    border-radius: 24px;
   }
 
   .caregiver-dashboard__time-value {
-    font-size: 1.8rem !important;
+    font-size: 3rem !important;
   }
 
   .caregiver-dashboard__date-value {
-    font-size: 0.8rem !important;
+    font-size: 1.25rem !important;
   }
 
-  .caregiver-dashboard__logo-title {
-    font-size: 1.3rem !important;
-  }
-
-  .caregiver-dashboard__modal-container {
-    padding: 16px;
-  }
-
-  .caregiver-dashboard__report-table {
-    font-size: 11px;
-  }
-
-  .caregiver-dashboard__report-table th,
-  .caregiver-dashboard__report-table td {
-    padding: 8px 6px;
-  }
-}
-
-/* ============================================
-   LANDSCAPE MODE - MOBILE
-   ============================================ */
-
-@media (max-height: 500px) and (orientation: landscape) {
-  .caregiver-dashboard__time-card-content {
-    padding: 16px !important;
-  }
-
-  .caregiver-dashboard__time-value {
-    font-size: 1.8rem !important;
-  }
-
-  .caregiver-dashboard__time-icon {
-    font-size: 28px !important;
-    margin-bottom: 8px;
-  }
-
-  .caregiver-dashboard__modal-container {
-    max-height: 95vh;
+  .caregiver-dashboard__no-medications {
+    padding: 32px;
   }
 }
 
