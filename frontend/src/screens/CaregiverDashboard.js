@@ -25,7 +25,6 @@ import './CaregiverDashboard.css';
 const CaregiverDashboard = () => {
   const { t, i18n } = useTranslation();
   const [medicines, setMedicines] = useState([]);
-  const [todaysMedicines, setTodaysMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,6 +45,7 @@ const CaregiverDashboard = () => {
   });
   const [editingContactId, setEditingContactId] = useState(null);
   const [emergencyContacts, setEmergencyContacts] = useState([]);
+  const [todaysMedicines, setTodaysMedicines] = useState([]);
   const [reminderDialog, setReminderDialog] = useState({ open: false, medicine: null, scheduledTime: null });
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -113,41 +113,16 @@ const CaregiverDashboard = () => {
     }
   }, [token]);
 
+
   useEffect(() => {
-    const fetchTodaysMedicines = async () => {
-      try {
-        if (token) {
-          const response = await getTodaysMedicines(token);
-          setTodaysMedicines(response.data || []);
-        }
-      } catch (error) {
-        console.error('Error fetching today\'s medicines:', error);
-      }
-    };
-
-    fetchTodaysMedicines();
-
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [token]);
+  }, []);
 
-  const handleTakeMedicine = async (medicineId, scheduledTime) => {
-    try {
-      if (token) {
-        await markMedicineTaken(medicineId, { time: scheduledTime }, token);
-        const response = await getTodaysMedicines(token);
-        setTodaysMedicines(response.data || []);
-      }
-      setReminderDialog({ open: false, medicine: null, scheduledTime: null });
-    } catch (error) {
-      console.error('Error marking medicine as taken:', error);
-    }
-  };
 
-  const { triggerDemoNotification, testVoiceSupport } = useMultilingualNotifications(todaysMedicines, user, token, handleTakeMedicine);
 
   const calculateAdherence = () => {
     if (medicines.length === 0) return 0;
@@ -303,6 +278,50 @@ const CaregiverDashboard = () => {
       loadContacts();
     }
   }, [token]);
+
+  useEffect(() => {
+    const loadTodaysMedicines = async () => {
+      try {
+        const response = await getTodaysMedicines(token);
+        setTodaysMedicines(response.data || []);
+      } catch (error) {
+        console.error('Failed to load today\'s medicines', error);
+      }
+    };
+    if (token) {
+      loadTodaysMedicines();
+    }
+  }, [token]);
+
+  const handleTakeMedicine = async (medicineId, scheduledTime) => {
+    try {
+      await markMedicineTaken(medicineId, scheduledTime, token);
+      // Reload today's medicines after marking as taken
+      const response = await getTodaysMedicines(token);
+      setTodaysMedicines(response.data || []);
+      // Also reload all medicines to update the table
+      const allMedicines = await fetchMedicines(token);
+      setMedicines(allMedicines.data || []);
+    } catch (error) {
+      console.error('Error marking medicine as taken:', error);
+      alert('Failed to mark medicine as taken. Please try again.');
+    }
+  };
+
+  const triggerDemoNotification = (medicine) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notification = new Notification(`Time to take ${medicine.name}`, {
+        body: `Dosage: ${medicine.dosage}`,
+        icon: '/favicon.ico', // Adjust icon path as needed
+      });
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+    } else {
+      alert('Notifications are not enabled. Please enable notifications to receive reminders.');
+    }
+  };
 
   const handleDownloadReport = async () => {
     try {
@@ -761,7 +780,7 @@ const CaregiverDashboard = () => {
                   onChange={handleContactInputChange}
                 >
                   <MenuItem value="Private Ambulance">Ambulance</MenuItem>
-                  <MenuItem value="Nurse or Caretaker">Caretaker</MenuItem>
+                  <MenuItem value="Nurse">Nurse</MenuItem>
                   <MenuItem value="Relative">Relative</MenuItem>
                 </Select>
               </FormControl>

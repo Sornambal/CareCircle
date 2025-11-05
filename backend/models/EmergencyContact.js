@@ -20,7 +20,7 @@ const emergencyContactSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['Private Ambulance', 'Nurse or Caretaker', 'Relative'],
+    enum: ['Private Ambulance', 'Nurse', 'Relative'],
     required: true,
   },
   createdAt: {
