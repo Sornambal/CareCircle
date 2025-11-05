@@ -67,7 +67,11 @@ const ElderlyDashboard = () => {
       try {
         if (token) {
           const response = await getTodaysMedicines(token);
-          setTodaysMedicines(response.data || []);
+          // Sort medicines by creation date - newest first
+          const sortedMedicines = (response.data || []).sort((a, b) => {
+            return new Date(b.createdAt || b._id) - new Date(a.createdAt || a._id);
+          });
+          setTodaysMedicines(sortedMedicines);
         }
       } catch (error) {
         setError(t('failedToLoadMedicines'));
@@ -89,7 +93,11 @@ const ElderlyDashboard = () => {
       if (token) {
         await markMedicineTaken(medicineId, { time: scheduledTime }, token);
         const response = await getTodaysMedicines(token);
-        setTodaysMedicines(response.data || []);
+        // Sort medicines by creation date - newest first
+        const sortedMedicines = (response.data || []).sort((a, b) => {
+          return new Date(b.createdAt || b._id) - new Date(a.createdAt || a._id);
+        });
+        setTodaysMedicines(sortedMedicines);
       }
       setReminderDialog({ open: false, medicine: null, scheduledTime: null });
     } catch (error) {
@@ -202,28 +210,30 @@ const ElderlyDashboard = () => {
               </Typography>
 
               {todaysMedicines.length > 0 ? (
-                <Grid container spacing={{ xs: 2, sm: 3 }}>
-                  {todaysMedicines.map((med) => (
-                    <Grid item xs={12} sm={6} md={4} key={med._id}>
-                      <Card variant="outlined" className="medicine-item-card">
-                        <CardContent className="medicine-item-content">
-                          <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
-                          <Box className="medicine-actions">
-                            <Button
-                              variant="contained"
-                              color="success"
-                              size="large"
-                              onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
-                              className="taken-btn"
-                            >
-                               {t('takenIt')}
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
+                <Box className="medications-scroll-container">
+                  <Box className="medications-horizontal-grid">
+                    {todaysMedicines.map((med) => (
+                      <Box key={med._id} className="medicine-item-wrapper">
+                        <Card variant="outlined" className="medicine-item-card">
+                          <CardContent className="medicine-item-content">
+                            <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
+                            <Box className="medicine-actions">
+                              <Button
+                                variant="contained"
+                                color="success"
+                                size="large"
+                                onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
+                                className="taken-btn"
+                              >
+                                 {t('takenIt')}
+                              </Button>
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
               ) : (
                 <Box className="no-medications">
                   <Typography variant="h6" className="no-medications-title">
