@@ -315,7 +315,7 @@
   border: 2px solid #e0e0e0 !important;
   transition: all 0.3s ease !important;
   height: 100%;
-  max-height: 280px;
+  max-height: 240px;
   background: #ffffff !important;
   display: flex;
   flex-direction: column;
@@ -328,7 +328,7 @@
 }
 
 .medicine-item-content {
-  padding: 14px !important;
+  padding: 12px !important;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -342,6 +342,16 @@
   display: flex;
   gap: 8px;
   flex-direction: column;
+}
+
+.taken-btn-side {
+  /* Button on the right side - compact styling */
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3) !important;
+}
+
+.taken-btn-side:hover {
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4) !important;
+  transform: translateY(-2px);
 }
 
 .taken-btn {
@@ -700,11 +710,11 @@
   }
 
   .medicine-item-card {
-    max-height: 300px;
+    max-height: 260px;
   }
 
   .medicine-item-content {
-    padding: 16px !important;
+    padding: 14px !important;
   }
 
   .taken-btn {
@@ -868,7 +878,11 @@
   }
 
   .medicine-item-card {
-    max-height: 320px;
+    max-height: 280px;
+  }
+
+  .medicine-item-content {
+    padding: 16px !important;
   }
 
   .medications-scroll-container {
