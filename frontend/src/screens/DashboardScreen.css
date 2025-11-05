@@ -262,28 +262,94 @@
   margin-bottom: 16px !important;
 }
 
+/* Scrollable container for medications */
+.medications-scroll-container {
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+  margin: -4px;
+}
+
+/* Custom scrollbar styling */
+.medications-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.medications-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.medications-scroll-container::-webkit-scrollbar-thumb {
+  background: #4caf50;
+  border-radius: 10px;
+}
+
+.medications-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #45a049;
+}
+
+/* Horizontal grid layout - row wise */
+.medications-horizontal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* For very small screens, stack cards vertically */
+@media (max-width: 360px) {
+  .medications-horizontal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Medicine item wrapper */
+.medicine-item-wrapper {
+  width: 100%;
+}
+
 .medicine-item-card {
   border-radius: 16px !important;
-  border: 2px solid #e8f5e8 !important;
-  background: linear-gradient(135deg, #f1f8e9 0%, #ffffff 100%) !important;
+  border: 2px solid #e0e0e0 !important;
+  transition: all 0.3s ease !important;
+  height: 100%;
+  max-height: 280px;
+  background: #ffffff !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.medicine-item-card:hover {
+  border-color: #4caf50 !important;
+  box-shadow: 0 6px 24px rgba(76, 175, 80, 0.15) !important;
+  transform: translateY(-4px);
 }
 
 .medicine-item-content {
-  padding: 16px !important;
+  padding: 14px !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .medicine-actions {
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
   display: flex;
   gap: 8px;
   flex-direction: column;
 }
 
 .taken-btn {
-  border-radius: 16px !important;
-  font-size: 1rem !important;
-  font-weight: bold !important;
-  padding: 10px 16px !important;
+  border-radius: 12px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  text-transform: none !important;
 }
 
 .medicine-edit-actions {
@@ -293,9 +359,12 @@
 
 .edit-btn,
 .delete-btn {
-  border-radius: 16px !important;
+  border-radius: 12px !important;
   flex: 1;
   font-size: 0.75rem !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+  padding: 10px 16px !important;
 }
 
 .no-medications {
@@ -625,6 +694,15 @@
     margin-bottom: 24px !important;
   }
 
+  /* Increase card width for tablets */
+  .medications-horizontal-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  }
+
+  .medicine-item-card {
+    max-height: 300px;
+  }
+
   .medicine-item-content {
     padding: 16px !important;
   }
@@ -782,5 +860,18 @@
 
   .no-medications {
     padding: 32px;
+  }
+
+  /* Larger cards for desktop */
+  .medications-horizontal-grid {
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  }
+
+  .medicine-item-card {
+    max-height: 320px;
+  }
+
+  .medications-scroll-container {
+    max-height: 500px;
   }
 }
