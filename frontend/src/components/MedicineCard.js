@@ -3,71 +3,70 @@ import { Card, CardContent, Typography, Box, Button, Chip } from '@mui/material'
 
 const MedicineCard = ({ medicine, onMarkTaken }) => {
   return (
-    <Card variant="outlined" sx={{ mb: 2 }}>
-      <CardContent>
-        <Typography variant="h6" component="div" gutterBottom>
-          {medicine.name}
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Typography variant="h6" component="div" gutterBottom sx={{ fontWeight: 600, color: '#2c3e50', fontSize: '1rem', mb: 1 }}>
+        {medicine.name}
+      </Typography>
+      <Box sx={{ mb: 1.5, pb: 1.5, borderBottom: '1px solid #e0e0e0' }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.8rem' }}>
+          <strong>Dosage:</strong> {medicine.dosage}
         </Typography>
-        <Box sx={{ mb: 1 }}>
-          <Typography variant="body2"><strong>Dosage:</strong> {medicine.dosage}</Typography>
-          <Typography variant="body2"><strong>Prescribed Days:</strong> {medicine.prescribedDays}</Typography>
-          <Typography variant="body2"><strong>Doctor Contact:</strong> {medicine.doctorContact}</Typography>
-          {medicine.otherContacts && (
-            <Typography variant="body2"><strong>Other Contacts:</strong> {medicine.otherContacts}</Typography>
-          )}
-        </Box>
-        {medicine.scheduledTimes && medicine.scheduledTimes.length > 0 && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1.5, fontWeight: 600 }}><strong>Scheduled Times:</strong></Typography>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.8rem' }}>
+          <strong>Days:</strong> {medicine.prescribedDays}
+        </Typography>
+        <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>
+          <strong>Doctor:</strong> {medicine.doctorContact}
+        </Typography>
+      </Box>
+      {medicine.scheduledTimes && medicine.scheduledTimes.length > 0 && (
+        <Box sx={{ mt: 'auto', overflow: 'auto', maxHeight: '120px' }}>
+          <Typography variant="body2" sx={{ mb: 1, fontWeight: 600, fontSize: '0.85rem', color: '#555' }}>
+            Scheduled Times:
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
             {medicine.scheduledTimes.map((scheduled, index) => (
               <Box 
                 key={index} 
                 sx={{ 
                   display: 'flex', 
-                  flexDirection: 'column',
-                  gap: 1.5,
-                  mb: 2,
-                  p: 1.5,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1,
+                  p: 0.75,
                   backgroundColor: scheduled.status === 'taken' ? '#e8f5e9' : '#fff3e0',
-                  borderRadius: 2,
-                  border: `1px solid ${scheduled.status === 'taken' ? '#c8e6c9' : '#ffe0b2'}`
+                  borderRadius: 1,
+                  border: `1px solid ${scheduled.status === 'taken' ? '#c8e6c9' : '#ffe0b2'}`,
+                  minHeight: '32px'
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
-                    {scheduled.time}
-                  </Typography>
-                  <Chip
-                    label={scheduled.status === 'taken' ? 'Taken' : 'Pending'}
-                    color={scheduled.status === 'taken' ? 'success' : 'warning'}
-                    size="small"
-                    sx={{ fontWeight: 500 }}
-                  />
-                </Box>
-                {scheduled.status === 'pending' && onMarkTaken && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="medium"
-                    onClick={() => onMarkTaken(medicine._id, scheduled.time)}
-                    sx={{ 
-                      textTransform: 'none',
-                      borderRadius: 2,
-                      fontWeight: 600,
-                      py: 1,
-                      boxShadow: 2
-                    }}
-                    fullWidth
-                  >
-                    Mark as Taken
-                  </Button>
-                )}
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    fontWeight: 500, 
+                    fontSize: '0.85rem',
+                    color: '#333',
+                    flexShrink: 0
+                  }}
+                >
+                  {scheduled.time}
+                </Typography>
+                <Chip
+                  label={scheduled.status === 'taken' ? 'Taken' : 'Pending'}
+                  color={scheduled.status === 'taken' ? 'success' : 'warning'}
+                  size="small"
+                  sx={{ 
+                    fontWeight: 500,
+                    fontSize: '0.7rem',
+                    height: '22px',
+                    flexShrink: 0
+                  }}
+                />
               </Box>
             ))}
           </Box>
-        )}
-      </CardContent>
-    </Card>
+        </Box>
+      )}
+    </Box>
   );
 };
 
