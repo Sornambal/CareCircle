@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, Button, Chip } from '@mui/material';
 
-const MedicineCard = ({ medicine, onMarkTaken }) => {
+const MedicineCard = ({ medicine, onMarkTaken, showButton = false, buttonText = 'Mark Taken' }) => {
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Typography variant="h6" component="div" gutterBottom sx={{ fontWeight: 600, color: '#2c3e50', fontSize: '1rem', mb: 1 }}>
@@ -19,50 +19,61 @@ const MedicineCard = ({ medicine, onMarkTaken }) => {
         </Typography>
       </Box>
       {medicine.scheduledTimes && medicine.scheduledTimes.length > 0 && (
-        <Box sx={{ mt: 'auto', overflow: 'auto', maxHeight: '120px' }}>
+        <Box sx={{ mt: 'auto' }}>
           <Typography variant="body2" sx={{ mb: 1, fontWeight: 600, fontSize: '0.85rem', color: '#555' }}>
             Scheduled Times:
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-            {medicine.scheduledTimes.map((scheduled, index) => (
-              <Box 
-                key={index} 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 1,
-                  p: 0.75,
-                  backgroundColor: scheduled.status === 'taken' ? '#e8f5e9' : '#fff3e0',
-                  borderRadius: 1,
-                  border: `1px solid ${scheduled.status === 'taken' ? '#c8e6c9' : '#ffe0b2'}`,
-                  minHeight: '32px'
-                }}
-              >
-                <Typography 
-                  variant="body2" 
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+            {/* Left side: Scheduled times list */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, flex: 1, overflow: 'auto', maxHeight: '100px' }}>
+              {medicine.scheduledTimes.map((scheduled, index) => (
+                <Box 
+                  key={index} 
                   sx={{ 
-                    fontWeight: 500, 
-                    fontSize: '0.85rem',
-                    color: '#333',
-                    flexShrink: 0
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    gap: 0.5,
+                    p: 0.75,
+                    backgroundColor: scheduled.status === 'taken' ? '#e8f5e9' : '#fff3e0',
+                    borderRadius: 1,
+                    border: `1px solid ${scheduled.status === 'taken' ? '#c8e6c9' : '#ffe0b2'}`,
                   }}
                 >
-                  {scheduled.time}
-                </Typography>
-                <Chip
-                  label={scheduled.status === 'taken' ? 'Taken' : 'Pending'}
-                  color={scheduled.status === 'taken' ? 'success' : 'warning'}
-                  size="small"
-                  sx={{ 
-                    fontWeight: 500,
-                    fontSize: '0.7rem',
-                    height: '22px',
-                    flexShrink: 0
-                  }}
-                />
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      fontWeight: 600, 
+                      fontSize: '0.85rem',
+                      color: '#333',
+                      lineHeight: 1.2
+                    }}
+                  >
+                    {scheduled.time}
+                  </Typography>
+                  <Chip
+                    label={scheduled.status === 'taken' ? 'Taken' : 'Pending'}
+                    color={scheduled.status === 'taken' ? 'success' : 'warning'}
+                    size="small"
+                    sx={{ 
+                      fontWeight: 500,
+                      fontSize: '0.65rem',
+                      height: '18px',
+                      width: 'fit-content',
+                      '& .MuiChip-label': {
+                        px: 0.75
+                      }
+                    }}
+                  />
+                </Box>
+              ))}
+            </Box>
+            
+            {/* Right side: Action button (passed from parent) */}
+            {showButton && (
+              <Box sx={{ flexShrink: 0 }}>
+                {/* Button will be rendered by parent component */}
               </Box>
-            ))}
+            )}
           </Box>
         </Box>
       )}
