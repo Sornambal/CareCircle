@@ -216,17 +216,40 @@ const ElderlyDashboard = () => {
                       <Box key={med._id} className="medicine-item-wrapper">
                         <Card variant="outlined" className="medicine-item-card">
                           <CardContent className="medicine-item-content">
-                            <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
-                            <Box className="medicine-actions">
-                              <Button
-                                variant="contained"
-                                color="success"
-                                size="large"
-                                onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
-                                className="taken-btn"
-                              >
-                                 {t('takenIt')}
-                              </Button>
+                            <Box sx={{ display: 'flex', gap: 1.5, height: '100%' }}>
+                              {/* Left side: Medicine Card */}
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <MedicineCard medicine={med} onMarkTaken={handleTakeMedicine} />
+                              </Box>
+                              
+                              {/* Right side: Action Button aligned with Scheduled Times */}
+                              <Box sx={{ 
+                                display: 'flex', 
+                                alignItems: 'flex-end',
+                                flexShrink: 0,
+                                pb: 0.5
+                              }}>
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  size="medium"
+                                  onClick={() => handleTakeMedicine(med._id, med.scheduledTimes[0]?.time)}
+                                  className="taken-btn-side"
+                                  sx={{
+                                    textTransform: 'none',
+                                    borderRadius: 1.5,
+                                    fontWeight: 600,
+                                    fontSize: '0.75rem',
+                                    py: 1,
+                                    px: 1.5,
+                                    minWidth: '70px',
+                                    height: 'fit-content',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  {t('takenIt')}
+                                </Button>
+                              </Box>
                             </Box>
                           </CardContent>
                         </Card>
