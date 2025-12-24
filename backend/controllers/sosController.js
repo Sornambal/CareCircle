@@ -74,49 +74,27 @@ const triggerSOS = async (req, res) => {
     const smsResults = await Promise.all(smsPromises);
     const successfulSMS = smsResults.filter(result => result.status === 'sent').length;
 
-    // Send voice calls for emergency SOS only
+    // Trigger a single voice call for SOS alerts to the configured target number
+    // Requirements: only one number should receive calls -> 9361106696 (E.164: +919361106696)
     let voiceResults = [];
-    if (type === 'emergency') {
-      const voicePromises = contacts.map(async (contact) => {
-        try {
-          const alertTypeText = 'EMERGENCY ALERT';
-
-          // Get user's preferred language for voice message
-          const userPreferredLanguage = req.user.preferredLanguage || 'English';
-
-          // Multilingual voice messages
-          const voiceMessages = {
-            English: `Emergency alert. ${req.user.elderlyName} has triggered an SOS alert. Location: ${location?.lat || 'Unknown'}, ${location?.lng || 'Unknown'}. Please check on them immediately.`,
-            Tamil: `அவசர எச்சரிக்கை. ${req.user.elderlyName} ஒரு SOS எச்சரிக்கையைத் தூண்டியுள்ளார். இடம்: ${location?.lat || 'தெரியாது'}, ${location?.lng || 'தெரியாது'}. உடனடியாக அவர்களைச் சரிபார்க்கவும்.`,
-            Hindi: `आपातकालीन अलर्ट। ${req.user.elderlyName} ने SOS अलर्ट ट्रिगर किया है। स्थान: ${location?.lat || 'अज्ञात'}, ${location?.lng || 'अज्ञात'}। कृपया तुरंत उनकी जांच करें।`,
-            Malayalam: `അടിയന്തര അലേർട്ട്. ${req.user.elderlyName} ഒരു SOS അലേർട്ട് ട്രിഗർ ചെയ്തു. സ്ഥാനം: ${location?.lat || 'അജ്ഞാതം'}, ${location?.lng || 'അജ്ഞാതം'}। ഉടനെ അവരെ പരിശോധിക്കുക.`,
-          };
-
-          const voiceMessage = voiceMessages[userPreferredLanguage] || voiceMessages.English;
-
-          // Create TwiML for voice call
-          const twiml = `<Response><Say voice="alice" language="${userPreferredLanguage === 'Tamil' ? 'ta-IN' : userPreferredLanguage === 'Hindi' ? 'hi-IN' : userPreferredLanguage === 'Malayalam' ? 'ml-IN' : 'en-IN'}">${voiceMessage}</Say></Response>`;
-
-          if (!client || !twilioPhoneNumber) {
-            console.warn('Twilio not configured - skipping voice call to', contact.phone);
-            return { contact: contact.name, status: 'skipped', reason: 'twilio_not_configured' };
-          }
-
+    if (type === 'emergency' || type === 'family') {
+      try {
+        if (!client || !twilioPhoneNumber) {
+          console.warn('Twilio not configured - skipping single SOS voice call');
+        } else {
+          const emergencyNumber = process.env.SOS_TARGET_NUMBER || '+919361106696';
           const call = await client.calls.create({
-            twiml: twiml,
-            to: contact.phone,
+            twiml: '<Response><Say voice="alice" language="en-IN">Emergency alert from Care Circle. The elderly user is in an emergency situation. Please respond immediately.</Say><Pause length="1"/></Response>',
+            to: emergencyNumber,
             from: twilioPhoneNumber,
           });
-
-          console.log(`Voice call initiated to ${contact.name}: ${call.sid}`);
-          return { contact: contact.name, status: 'called', sid: call.sid };
-        } catch (error) {
-          console.error(`Failed to initiate voice call to ${contact.name}:`, error);
-          return { contact: contact.name, status: 'failed', error: error.message };
+          console.log(`Single SOS voice call initiated to ${emergencyNumber}: ${call.sid}`);
+          voiceResults = [{ contact: emergencyNumber, status: 'called', sid: call.sid }];
         }
-      });
-
-      voiceResults = await Promise.all(voicePromises);
+      } catch (error) {
+        console.error('Failed to initiate single SOS voice call:', error);
+        voiceResults = [{ contact: '+919361106696', status: 'failed', error: error.message }];
+      }
     }
 
     const successfulVoice = voiceResults.filter(result => result.status === 'called').length;

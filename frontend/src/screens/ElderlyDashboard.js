@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MedicineCard from '../components/MedicineCard';
 import SOSButton from '../components/SOSButton';
 import Header from '../components/Header';
+import MedicineChatbot from '../components/MedicineChatbot';
 import useMultilingualNotifications from '../hooks/useMultilingualNotifications';
 import usePWAInstall from '../hooks/usePWAInstall';
 import { getTodaysMedicines, markMedicineTaken } from '../utils/api';
@@ -23,7 +24,9 @@ const ElderlyDashboard = () => {
   const token = localStorage.getItem('token');
   const [user, setUser] = React.useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('user') || '{}');
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log('ElderlyDashboard - Loaded user data:', userData);
+      return userData;
     } catch {
       return {};
     }
@@ -154,6 +157,9 @@ const ElderlyDashboard = () => {
               <SOSButton type="relatives" user={user} />
             </Box>
           </Box>
+
+          {/* Medicine Chatbot Widget */}
+          <MedicineChatbot elderlyId={user?._id} />
 
           {/* Welcome Section for Elderly */}
           <Card className="welcome-card">

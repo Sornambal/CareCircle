@@ -28,6 +28,8 @@ CareCircle is a full-stack web application designed to assist elderly users with
 - **Security**: JWT authentication and data encryption middleware
 - **Real-time Communication**: Socket.IO for live updates and notifications
 - **Multilingual Support**: Translation utilities for multiple languages
+- **Voice-Enabled Medicine Chatbot**: Elderly dashboard widget with speech-to-text (browser Web Speech API), Groq Llama 4 Scout responses, and spoken replies
+- **Inline Twilio Voice SOS**: Emergency calls use inline TwiML with a clear spoken alert (voice="alice", en-IN)
 
 ---
 
@@ -37,6 +39,7 @@ CareCircle is a full-stack web application designed to assist elderly users with
 - **npm** (comes with Node.js)
 - **MongoDB** (local installation or cloud instance like MongoDB Atlas)
 - **Git** (for cloning the repository)
+- **Groq API Key** (for medicine chatbot)
 
 ---
 
@@ -62,6 +65,8 @@ TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_phone_number
 ENCRYPTION_KEY=your_32_character_encryption_key
+GROQ_API_KEY=your_groq_api_key
+SOS_TARGET_NUMBER=+91xxxxxxxxxx
 ```
 
 ### 3. Backend Setup
@@ -117,6 +122,11 @@ Ensure MongoDB is running locally or configure the connection string in `backend
 2. **Home Screen**: View current time, medicine schedule, and SOS buttons
 3. **Medication**: Mark medicines as taken when reminded
 4. **Emergency**: Use SOS buttons with countdown and reject option
+5. **Medicine Chatbot**: Use the 💊 widget (type or tap “Speak”) to ask allowed medicine questions; responses are spoken aloud
+
+### SOS Voice Call Behavior:
+- Emergency voice calls use inline TwiML with `voice="alice"` and `language="en-IN"`
+- Message spoken: "Emergency alert from Care Circle. The elderly user is in an emergency situation. Please respond immediately."
 
 ---
 

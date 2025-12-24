@@ -22,6 +22,7 @@ const eventRoutes = require('./routes/events');
 const reportRoutes = require('./routes/reports');
 const emergencyContactsRoutes = require('./routes/emergencyContacts');
 const twilioWebhookRoutes = require('./routes/twilioWebhookRoutes');
+const chatRoutes = require('./routes/chat');
 
 const app = express();
 const server = http.createServer(app);
@@ -58,6 +59,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/emergency-contacts', emergencyContactsRoutes);
 app.use('/api/twilio', twilioWebhookRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
