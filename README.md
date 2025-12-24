@@ -1,4 +1,4 @@
-# CareCircle - AI Elderly Care Assistant
+# CareCircle - Elderly Care Assistant
 
 CareCircle is a full-stack web application designed to assist elderly users with medicine management, health tracking, and SOS alerts. The project consists of a backend API built with Node.js and Express, and a frontend React application with Material-UI components.
 
