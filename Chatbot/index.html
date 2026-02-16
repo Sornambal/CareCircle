@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediAssist AI — Your Trusted Medical Assistant</title>
+  <meta name="description" content="MediAssist AI provides general medical information about symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ======== EMERGENCY BANNER ======== -->
+  <div class="emergency-banner" id="emergencyBanner">
+    <span class="material-symbols-rounded">emergency</span>
+    <span>For emergencies call local emergency services immediately</span>
+    <a href="tel:911" class="emergency-call-btn">
+      <span class="material-symbols-rounded">call</span> Call Emergency
+    </a>
+    <button class="banner-close" id="bannerClose" aria-label="Close banner">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <!-- ======== TOP NAVIGATION ======== -->
+  <nav class="top-nav" id="topNav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon material-symbols-rounded">health_and_safety</span>
+        <span class="logo-text">MediAssist <span class="logo-accent">AI</span></span>
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#" class="nav-link" data-modal="aboutModal">About</a>
+        <a href="#" class="nav-link" data-modal="emergencyModal">Emergency Info</a>
+        <a href="#" class="nav-link" data-modal="disclaimerModal">Disclaimer</a>
+
+        <!-- Language Selector -->
+        <div class="lang-selector">
+          <button class="lang-btn" id="langBtn" aria-label="Language">
+            <span class="material-symbols-rounded">translate</span>
+            <span class="lang-label" id="langLabel">EN</span>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option active" data-lang="en">English</button>
+            <button class="lang-option" data-lang="es">Español</button>
+            <button class="lang-option" data-lang="fr">Français</button>
+            <button class="lang-option" data-lang="de">Deutsch</button>
+            <button class="lang-option" data-lang="hi">हिन्दी</button>
+            <button class="lang-option" data-lang="zh">中文</button>
+          </div>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+        </button>
+
+        <button class="login-btn" id="loginBtn" data-modal="loginModal">
+          <span class="material-symbols-rounded">person</span> Login
+        </button>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ======== MAIN CHAT AREA ======== -->
+  <main class="chat-main">
+    <!-- Disclaimer strip -->
+    <div class="disclaimer-strip">
+      <span class="material-symbols-rounded">info</span>
+      This chatbot provides general medical information and is not a substitute for professional medical advice.
+    </div>
+
+    <!-- Welcome / Empty State -->
+    <div class="welcome-state" id="welcomeState">
+      <div class="welcome-icon-wrap">
+        <span class="material-symbols-rounded welcome-icon">smart_toy</span>
+      </div>
+      <h1 class="welcome-title">Welcome to <span class="accent">MediAssist AI</span></h1>
+      <p class="welcome-sub">Your trusted companion for general medical information.<br />Ask me about symptoms, medications, first aid, nutrition, and more.</p>
+
+      <div class="suggestion-chips" id="suggestionChips">
+        <button class="chip" data-msg="I have a fever">🤒 I have a fever</button>
+        <button class="chip" data-msg="Headache remedies">🤕 Headache remedies</button>
+        <button class="chip" data-msg="First aid for burns">🔥 First aid for burns</button>
+        <button class="chip" data-msg="Symptoms of diabetes">🩺 Symptoms of diabetes</button>
+        <button class="chip" data-msg="Mental health support">🧠 Mental health support</button>
+        <button class="chip" data-msg="Nutrition tips">🥗 Nutrition tips</button>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar">
+        <span class="material-symbols-rounded">health_and_safety</span>
+      </div>
+      <div class="typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Bottom suggestion chips (shown after conversation starts) -->
+    <div class="bottom-chips" id="bottomChips">
+      <button class="chip chip-sm" data-msg="I have a fever">🤒 Fever</button>
+      <button class="chip chip-sm" data-msg="Headache remedies">🤕 Headache</button>
+      <button class="chip chip-sm" data-msg="First aid for burns">🔥 Burns</button>
+      <button class="chip chip-sm" data-msg="Symptoms of diabetes">🩺 Diabetes</button>
+      <button class="chip chip-sm" data-msg="Mental health support">🧠 Mental health</button>
+    </div>
+  </main>
+
+  <!-- ======== INPUT BAR ======== -->
+  <div class="input-bar" id="inputBar">
+    <div class="input-bar-inner">
+      <!-- Upload -->
+      <button class="input-action-btn" id="uploadBtn" aria-label="Upload medical report" title="Upload medical report">
+        <span class="material-symbols-rounded">attach_file</span>
+      </button>
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" hidden />
+
+      <!-- Text Input -->
+      <div class="input-wrap">
+        <textarea id="userInput" rows="1" placeholder="Describe your symptoms or ask a question..." aria-label="Message input"></textarea>
+      </div>
+
+      <!-- Voice -->
+      <button class="input-action-btn" id="voiceBtn" aria-label="Voice input" title="Voice input">
+        <span class="material-symbols-rounded">mic</span>
+      </button>
+
+      <!-- Save -->
+      <button class="input-action-btn" id="saveBtn" aria-label="Save conversation" title="Save conversation">
+        <span class="material-symbols-rounded">save</span>
+      </button>
+
+      <!-- Send -->
+      <button class="send-btn" id="sendBtn" aria-label="Send message" disabled>
+        <span class="material-symbols-rounded">send</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======== FLOATING CHAT BUTTON (mobile) ======== -->
+  <button class="fab-chat" id="fabChat" aria-label="Open chat">
+    <span class="material-symbols-rounded">chat</span>
+  </button>
+
+  <!-- ======== EMERGENCY DETECTION OVERLAY ======== -->
+  <div class="emergency-overlay" id="emergencyOverlay">
+    <div class="emergency-card">
+      <div class="emergency-card-icon">
+        <span class="material-symbols-rounded">warning</span>
+      </div>
+      <h2>Emergency Detected</h2>
+      <p>Your message may indicate a medical emergency. Please contact emergency services immediately or go to the nearest emergency room.</p>
+      <div class="emergency-actions">
+        <a href="tel:911" class="btn btn-danger">
+          <span class="material-symbols-rounded">call</span> Call 911
+        </a>
+        <button class="btn btn-outline" id="dismissEmergency">Continue chatting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== MODALS ======== -->
+
+  <!-- About Modal -->
+  <div class="modal-overlay" id="aboutModal">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
+      <div class="modal-icon"><span class="material-symbols-rounded">info</span></div>
+      <h2>About MediAssist AI</h2>
+      <p>MediAssist AI is an intelligent medical chatbot designed to provide general health information. It covers symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care.</p>
+      <p>Powered by advanced AI, it offers helpful guidance while always recommending professional consultation for specific medical concerns.</p>
+      <h3>Key Capabilities</h3>
+      <ul>
+        <li>Symptom analysis &amp; information</li>
+        <li>Medication general guidance</li>
+        <li>First aid instructions</li>
+        <li>Mental health resources</li>
+        <li>Nutrition &amp; wellness tips</li>
+        <li>Preventive care recommendations</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Emergency Info Modal -->
+  <div class="modal-overlay" id="emergencyModal">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
+      <div class="modal-icon modal-icon-danger"><span class="material-symbols-rounded">emergency</span></div>
+      <h2>Emergency Information</h2>
+      <p>If you or someone else is experiencing a medical emergency, please call emergency services immediately:</p>
+      <div class="emergency-numbers">
+        <div class="enum"><strong>🇺🇸 USA:</strong> 911</div>
+        <div class="enum"><strong>🇬🇧 UK:</strong> 999 / 112</div>
+        <div class="enum"><strong>🇮🇳 India:</strong> 112 / 108</div>
+        <div class="enum"><strong>🇪🇺 Europe:</strong> 112</div>
+        <div class="enum"><strong>🇦🇺 Australia:</strong> 000</div>
+      </div>
+      <p class="mt">Signs of an emergency: chest pain, difficulty breathing, severe bleeding, stroke symptoms (F.A.S.T.), loss of consciousness, severe allergic reaction.</p>
+      <a href="tel:911" class="btn btn-danger btn-full">
+        <span class="material-symbols-rounded">call</span> Call Emergency Now
+      </a>
+    </div>
+  </div>
+
+  <!-- Disclaimer Modal -->
+  <div class="modal-overlay" id="disclaimerModal">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
+      <div class="modal-icon modal-icon-warn"><span class="material-symbols-rounded">gavel</span></div>
+      <h2>Medical Disclaimer</h2>
+      <p><strong>This chatbot provides general medical information and is not a substitute for professional medical advice, diagnosis, or treatment.</strong></p>
+      <p>Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read or received from this chatbot.</p>
+      <p>If you think you may have a medical emergency, call your doctor, go to the emergency department, or call emergency services immediately.</p>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-card modal-card-sm">
+      <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
+      <div class="modal-icon"><span class="material-symbols-rounded">person</span></div>
+      <h2>Login</h2>
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        <p class="form-note">Don't have an account? <a href="#">Sign up</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- File Upload Preview -->
+  <div class="upload-preview" id="uploadPreview">
+    <div class="upload-preview-inner">
+      <span class="material-symbols-rounded">description</span>
+      <span class="upload-filename" id="uploadFilename"></span>
+      <button class="upload-remove" id="uploadRemove" aria-label="Remove file">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
