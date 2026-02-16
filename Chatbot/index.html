@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MediAssist AI — Your Trusted Medical Assistant</title>
-  <meta name="description" content="MediAssist AI provides general medical information about symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care." />
+  <meta name="description"
+    content="MediAssist AI provides general medical information about symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 
   <!-- ======== EMERGENCY BANNER ======== -->
@@ -84,7 +87,8 @@
         <span class="material-symbols-rounded welcome-icon">smart_toy</span>
       </div>
       <h1 class="welcome-title">Welcome to <span class="accent">MediAssist AI</span></h1>
-      <p class="welcome-sub">Your trusted companion for general medical information.<br />Ask me about symptoms, medications, first aid, nutrition, and more.</p>
+      <p class="welcome-sub">Your trusted companion for general medical information.<br />Ask me about symptoms,
+        medications, first aid, nutrition, and more.</p>
 
       <div class="suggestion-chips" id="suggestionChips">
         <button class="chip" data-msg="I have a fever">🤒 I have a fever</button>
@@ -130,7 +134,8 @@
 
       <!-- Text Input -->
       <div class="input-wrap">
-        <textarea id="userInput" rows="1" placeholder="Describe your symptoms or ask a question..." aria-label="Message input"></textarea>
+        <textarea id="userInput" rows="1" placeholder="Describe your symptoms or ask a question..."
+          aria-label="Message input"></textarea>
       </div>
 
       <!-- Voice -->
@@ -162,7 +167,8 @@
         <span class="material-symbols-rounded">warning</span>
       </div>
       <h2>Emergency Detected</h2>
-      <p>Your message may indicate a medical emergency. Please contact emergency services immediately or go to the nearest emergency room.</p>
+      <p>Your message may indicate a medical emergency. Please contact emergency services immediately or go to the
+        nearest emergency room.</p>
       <div class="emergency-actions">
         <a href="tel:911" class="btn btn-danger">
           <span class="material-symbols-rounded">call</span> Call 911
@@ -180,8 +186,10 @@
       <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
       <div class="modal-icon"><span class="material-symbols-rounded">info</span></div>
       <h2>About MediAssist AI</h2>
-      <p>MediAssist AI is an intelligent medical chatbot designed to provide general health information. It covers symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care.</p>
-      <p>Powered by advanced AI, it offers helpful guidance while always recommending professional consultation for specific medical concerns.</p>
+      <p>MediAssist AI is an intelligent medical chatbot designed to provide general health information. It covers
+        symptoms, diseases, medications, first aid, mental health, nutrition, and preventive care.</p>
+      <p>Powered by advanced AI, it offers helpful guidance while always recommending professional consultation for
+        specific medical concerns.</p>
       <h3>Key Capabilities</h3>
       <ul>
         <li>Symptom analysis &amp; information</li>
@@ -208,7 +216,8 @@
         <div class="enum"><strong>🇪🇺 Europe:</strong> 112</div>
         <div class="enum"><strong>🇦🇺 Australia:</strong> 000</div>
       </div>
-      <p class="mt">Signs of an emergency: chest pain, difficulty breathing, severe bleeding, stroke symptoms (F.A.S.T.), loss of consciousness, severe allergic reaction.</p>
+      <p class="mt">Signs of an emergency: chest pain, difficulty breathing, severe bleeding, stroke symptoms
+        (F.A.S.T.), loss of consciousness, severe allergic reaction.</p>
       <a href="tel:911" class="btn btn-danger btn-full">
         <span class="material-symbols-rounded">call</span> Call Emergency Now
       </a>
@@ -221,9 +230,13 @@
       <button class="modal-close" aria-label="Close"><span class="material-symbols-rounded">close</span></button>
       <div class="modal-icon modal-icon-warn"><span class="material-symbols-rounded">gavel</span></div>
       <h2>Medical Disclaimer</h2>
-      <p><strong>This chatbot provides general medical information and is not a substitute for professional medical advice, diagnosis, or treatment.</strong></p>
-      <p>Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read or received from this chatbot.</p>
-      <p>If you think you may have a medical emergency, call your doctor, go to the emergency department, or call emergency services immediately.</p>
+      <p><strong>This chatbot provides general medical information and is not a substitute for professional medical
+          advice, diagnosis, or treatment.</strong></p>
+      <p>Always seek the advice of your physician or other qualified health provider with any questions you may have
+        regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of
+        something you have read or received from this chatbot.</p>
+      <p>If you think you may have a medical emergency, call your doctor, go to the emergency department, or call
+        emergency services immediately.</p>
     </div>
   </div>
 
@@ -259,6 +272,8 @@
     </div>
   </div>
 
+  <script src="ml-engine.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
